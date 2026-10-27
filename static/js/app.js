@@ -1,0 +1,419 @@
+// FINN - Financial Investment Agent Mobile Client
+let state = {
+  priceThreshold: 3.0,
+  volThreshold: 1.8,
+  activeCategory: 'all',
+  activeTicker: 'TATAMOTORS.NS',
+  showRoutine: false,
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  initNav();
+  initThresholds();
+  initCategoryFilters();
+  initResearchModule();
+  
+  // Initial data load
+  loadDigest();
+  loadAlerts();
+  loadPortfolio();
+  runResearch(state.activeTicker);
+});
+
+// Navigation Handling
+function initNav() {
+  const navBtns = document.querySelectorAll('.nav-item');
+  const panels = document.querySelectorAll('.view-panel');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      const targetId = btn.getAttribute('data-target');
+      const panel = document.getElementById(targetId);
+      if (panel) panel.classList.add('active');
+
+      if (targetId === 'view-alerts') loadAlerts();
+      if (targetId === 'view-portfolio') loadPortfolio();
+    });
+  });
+}
+
+// Threshold Configuration Modal
+function initThresholds() {
+  const toggleBtn = document.getElementById('threshold-toggle-btn');
+  const modal = document.getElementById('threshold-modal');
+  const closeBtn = document.getElementById('close-modal-btn');
+
+  toggleBtn.addEventListener('click', () => {
+    modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+  });
+
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  // Price buttons
+  document.querySelectorAll('.thresh-p-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.thresh-p-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.priceThreshold = parseFloat(btn.getAttribute('data-val'));
+      updateThresholdDisplay();
+      loadAlerts();
+      loadPortfolio();
+    });
+  });
+
+  // Volume buttons
+  document.querySelectorAll('.thresh-v-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.thresh-v-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.volThreshold = parseFloat(btn.getAttribute('data-val'));
+      updateThresholdDisplay();
+      loadAlerts();
+      loadPortfolio();
+    });
+  });
+}
+
+function updateThresholdDisplay() {
+  const text = `Vol >${state.volThreshold}x | ±${state.priceThreshold}%`;
+  document.getElementById('active-thresholds-text').textContent = text;
+}
+
+// Category filter pills
+function initCategoryFilters() {
+  document.querySelectorAll('.filter-scroll .pill-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-scroll .pill-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.activeCategory = btn.getAttribute('data-cat');
+      loadDigest();
+    });
+  });
+
+  const toggleRoutineBtn = document.getElementById('toggle-routine-btn');
+  toggleRoutineBtn.addEventListener('click', () => {
+    state.showRoutine = !state.showRoutine;
+    const container = document.getElementById('routine-feed-container');
+    container.style.display = state.showRoutine ? 'block' : 'none';
+    toggleRoutineBtn.textContent = state.showRoutine ? '🔼 Hide Routine Paperwork' : '📁 Show Suppressed Routine Filings';
+  });
+}
+
+// 1. PUSH MODE: THE WIRE (WINDOWED DIGEST)
+async function loadDigest() {
+  const container = document.getElementById('digest-feed-container');
+  const routineContainer = document.getElementById('routine-feed-container');
+  const statsBadge = document.getElementById('digest-stats-badge');
+
+  container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b; font-size:12px;">Scanning portfolio filings...</div>';
+
+  try {
+    const res = await fetch(`/api/digest?window=24&category=${state.activeCategory}&include_routine=false`);
+    const data = await res.json();
+
+    statsBadge.textContent = `${data.high_priority_count + data.medium_priority_count} Signals | ${data.routine_collapsed_count} Routine`;
+
+    if (!data.feed || data.feed.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b; font-size:12px;">No material announcements in this filter window.</div>';
+      return;
+    }
+
+    container.innerHTML = data.feed.map(item => renderAnnouncementCard(item)).join('');
+    
+    // Render collapsed routine
+    if (data.collapsed_routine && data.collapsed_routine.length > 0) {
+      routineContainer.innerHTML = data.collapsed_routine.map(item => `
+        <div style="background:#131b2e; border:1px solid #24324f; border-radius:8px; padding:10px; margin-bottom:8px; font-size:11px;">
+          <div style="display:flex; justify-content:space-between; color:#64748b; margin-bottom:4px;">
+            <span style="font-weight:700;">${item.ticker}</span>
+            <span style="font-size:9px;">ROUTINE FILING</span>
+          </div>
+          <div style="color:#94a3b8;">${item.title}</div>
+        </div>
+      `).join('');
+    }
+  } catch (err) {
+    container.innerHTML = `<div style="color:#ef4444; font-size:12px; padding:20px;">Error loading digest: ${err.message}</div>`;
+  }
+}
+
+function renderAnnouncementCard(item) {
+  const cat = item.category || 'unclassified';
+  const catClass = `cat-${cat.replace('_', '')}`;
+  
+  // Custom enrichment for Quarterly Results
+  let metricsHtml = '';
+  if (cat === 'results' && item.metrics) {
+    const m = item.metrics;
+    metricsHtml = `
+      <div class="metrics-grid">
+        <div class="metric-col">
+          <div class="metric-label">Revenue</div>
+          <div class="metric-value">₹${(m.revenue.current/1000).toFixed(1)}k Cr</div>
+          <div class="metric-delta delta-up">+${m.revenue.yoy_pct}% YoY</div>
+        </div>
+        <div class="metric-col">
+          <div class="metric-label">EBITDA</div>
+          <div class="metric-value">₹${(m.ebitda.current/1000).toFixed(1)}k Cr</div>
+          <div class="metric-delta delta-up">+${m.ebitda.yoy_pct}% YoY</div>
+        </div>
+        <div class="metric-col">
+          <div class="metric-label">PBT</div>
+          <div class="metric-value">₹${(m.pbt.current/1000).toFixed(1)}k Cr</div>
+          <div class="metric-delta delta-up">+${m.pbt.yoy_pct}% YoY</div>
+        </div>
+        <div class="metric-col">
+          <div class="metric-label">PAT</div>
+          <div class="metric-value">₹${(m.pat.current/1000).toFixed(1)}k Cr</div>
+          <div class="metric-delta delta-up">+${m.pat.yoy_pct}% YoY</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Custom enrichment for Management Changes (Incoming Executive Bio)
+  let execHtml = '';
+  if (cat === 'management_change' && item.executive_enrichment) {
+    const ex = item.executive_enrichment;
+    execHtml = `
+      <div class="executive-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="exec-name">👤 ${ex.person_name}</div>
+          <span style="font-size:9px; background:#f59e0b20; color:#fbbf24; padding:2px 6px; border-radius:4px; font-weight:700;">PROFILED</span>
+        </div>
+        <div class="exec-role">${ex.role}</div>
+        <div class="exec-detail"><strong>Prior:</strong> ${ex.previous_role}</div>
+        <div class="exec-detail" style="margin-top:2px;"><strong>Pedigree:</strong> ${ex.education}</div>
+      </div>
+    `;
+  }
+
+  return `
+    <article class="card">
+      <div class="card-header">
+        <div>
+          <div class="company-title">${item.company || item.ticker}</div>
+          <div class="ticker-tag">${item.ticker}</div>
+        </div>
+        <span class="category-tag ${catClass}">${cat.replace('_', ' ')}</span>
+      </div>
+
+      <div class="card-title">${item.title}</div>
+
+      ${item.investor_takeaway ? `
+        <div class="takeaway-box">
+          ⚡ <strong>Takeaway:</strong> ${item.investor_takeaway}
+        </div>
+      ` : ''}
+
+      ${metricsHtml}
+      ${execHtml}
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:10px; color:#64748b;">
+        <span>${formatTime(item.timestamp)}</span>
+        ${item.pdf_url ? `<a href="${item.pdf_url}" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:600;">Original Filing ↗</a>` : ''}
+      </div>
+    </article>
+  `;
+}
+
+// 2. TRIGGERED ALERTS
+async function loadAlerts() {
+  const container = document.getElementById('alerts-container');
+  container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b; font-size:12px;">Evaluating live alert triggers...</div>';
+
+  try {
+    const res = await fetch(`/api/alerts?price_thresh=${state.priceThreshold}&vol_thresh=${state.volThreshold}`);
+    const data = await res.json();
+
+    if (!data.alerts || data.alerts.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b; font-size:12px;">No threshold breaches currently detected.</div>';
+      return;
+    }
+
+    container.innerHTML = data.alerts.map(alert => `
+      <div class="card" style="border-left: 3px solid ${alert.severity === 'CRITICAL' ? '#ef4444' : '#f59e0b'};">
+        <div class="card-header">
+          <div>
+            <span class="badge-alert">${alert.category.replace('_', ' ').toUpperCase()}</span>
+            <div class="company-title" style="margin-top:4px;">${alert.company} (${alert.ticker})</div>
+          </div>
+          <span style="font-size:10px; font-family:monospace; color:#94a3b8;">${alert.severity}</span>
+        </div>
+        <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:4px;">${alert.headline}</div>
+        <div style="font-size:12px; color:#cbd5e1;">${alert.detail}</div>
+      </div>
+    `).join('');
+  } catch (err) {
+    container.innerHTML = `<div style="color:#ef4444; font-size:12px; padding:20px;">Error loading alerts: ${err.message}</div>`;
+  }
+}
+
+// 3. PULL RESEARCH & NARRATIVE VS NUMBERS
+function initResearchModule() {
+  const runBtn = document.getElementById('run-research-btn');
+  const input = document.getElementById('research-ticker-input');
+
+  runBtn.addEventListener('click', () => {
+    if (input.value.trim()) {
+      runResearch(input.value.trim());
+    }
+  });
+
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && input.value.trim()) {
+      runResearch(input.value.trim());
+    }
+  });
+
+  document.querySelectorAll('.chip-ticker').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip-ticker').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const sym = chip.getAttribute('data-sym');
+      input.value = sym;
+      runResearch(sym);
+    });
+  });
+}
+
+async function runResearch(ticker) {
+  const container = document.getElementById('research-output-container');
+  container.innerHTML = `
+    <div style="text-align:center; padding:40px; color:#64748b; font-size:12px;">
+      <div class="pulse-dot" style="margin: 0 auto 12px auto;"></div>
+      Parsing Primary Concall Transcripts & Annual Reports for <strong>${ticker}</strong>...
+    </div>
+  `;
+
+  try {
+    const res = await fetch(`/api/research?ticker=${encodeURIComponent(ticker)}`);
+    const data = await res.json();
+    const r = data.research;
+
+    container.innerHTML = `
+      <!-- Company Snapshot -->
+      <div class="card" style="margin-top:10px;">
+        <div style="font-size:16px; font-weight:800; color:#fff;">${r.company_name}</div>
+        <div style="font-size:11px; color:#94a3b8; margin-bottom:8px;">${r.sector}</div>
+        <div style="font-size:12px; color:#cbd5e1; margin-bottom:8px;">${r.business_snapshot.summary}</div>
+        <div style="font-size:11px; color:#38bdf8;"><strong>Segments:</strong> ${r.business_snapshot.revenue_mix}</div>
+      </div>
+
+      <!-- Credibility Score Gauge -->
+      <div class="credibility-box">
+        <div class="score-circle">${r.credibility_score.score}</div>
+        <div>
+          <div style="font-size:13px; font-weight:800; color:#fef08a;">${r.credibility_score.rating}</div>
+          <div style="font-size:11px; color:#cbd5e1; line-height:1.35;">${r.credibility_score.commentary}</div>
+        </div>
+      </div>
+
+      <!-- Narrative vs Numbers 4-Quarter Delivery Table -->
+      <div class="research-section-title">
+        <span>Narrative vs. Numbers</span>
+        <span style="font-size:10px; color:#94a3b8;">Last 4 Quarters</span>
+      </div>
+
+      ${r.narrative_vs_numbers.map(item => `
+        <div class="nvn-card">
+          <div class="nvn-header">
+            <span class="quarter-label">${item.quarter}</span>
+            <span class="verdict-badge verdict-${item.verdict.replace(' ', '_')}">${item.verdict}</span>
+          </div>
+          <div class="guidance-text"><strong>Promised:</strong> ${item.management_guidance}</div>
+          <div class="actual-text"><strong>Delivered:</strong> ${item.actual_delivered}</div>
+          <div class="quote-source">Source: ${item.quote_source}</div>
+        </div>
+      `).join('')}
+
+      <!-- Cash Quality & Conversion -->
+      <div class="research-section-title">
+        <span>Cash Quality & Conversion</span>
+        <span style="font-size:10px; color:#10b981;">CFO/PAT: ${r.cash_quality.cfo_to_pat}</span>
+      </div>
+      <div class="card">
+        <div style="font-size:12px; font-weight:700; color:#34d399; margin-bottom:4px;">${r.cash_quality.cash_conversion_verdict}</div>
+        <div style="font-size:11px; color:#cbd5e1;">Free Cash Flow: ${r.cash_quality.fcf_generated}</div>
+      </div>
+
+      <!-- Bull vs Bear Thesis -->
+      <div class="research-section-title">
+        <span>Bull vs. Bear (Primary Grounded)</span>
+      </div>
+      <div class="thesis-grid">
+        <div class="thesis-card bull-card">
+          <div style="font-weight:800; margin-bottom:4px; color:#34d399;">🐂 BULL CASE</div>
+          <ul style="padding-left:14px; margin:0;">
+            ${r.bull_vs_bear.bull_case.map(pt => `<li style="margin-bottom:4px;">${pt}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="thesis-card bear-card">
+          <div style="font-weight:800; margin-bottom:4px; color:#f87171;">🐻 BEAR CASE</div>
+          <ul style="padding-left:14px; margin:0;">
+            ${r.bull_vs_bear.bear_case.map(pt => `<li style="margin-bottom:4px;">${pt}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Primary Sources Checked -->
+      <div style="margin-top:14px; padding:10px; background:#111827; border-radius:8px; font-size:10px; color:#64748b;">
+        <strong style="color:#94a3b8;">Primary Source Links Verified:</strong>
+        <div style="margin-top:4px;">
+          <a href="${r.annual_report_url}" target="_blank" style="color:#38bdf8; text-decoration:none; margin-right:12px;">Audited Annual Reports ↗</a>
+          <a href="${r.concall_transcripts_url}" target="_blank" style="color:#38bdf8; text-decoration:none;">Concall Transcripts ↗</a>
+        </div>
+      </div>
+    `;
+  } catch (err) {
+    container.innerHTML = `<div style="color:#ef4444; font-size:12px; padding:20px;">Error generating research: ${err.message}</div>`;
+  }
+}
+
+// 4. PORTFOLIO RADAR (EOD Metrics)
+async function loadPortfolio() {
+  const container = document.getElementById('portfolio-container');
+  container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b; font-size:12px;">Fetching 20-day baseline metrics...</div>';
+
+  try {
+    const res = await fetch(`/api/portfolio?price_thresh=${state.priceThreshold}&vol_thresh=${state.volThreshold}`);
+    const data = await res.json();
+
+    container.innerHTML = data.data.map(stock => {
+      const isUp = stock.pct_change >= 0;
+      const isAnomalousVol = stock.is_unusual_volume;
+      const isAnomalousPrice = stock.is_unusual_price;
+
+      return `
+        <div class="card" style="padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:13px; font-weight:700; color:#fff;">${stock.name}</div>
+            <div style="font-size:10px; color:#94a3b8; font-family:monospace;">${stock.ticker} · ${stock.sector}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:13px; font-weight:700; font-family:monospace; color:${isUp ? '#10b981' : '#ef4444'};">
+              ${isUp ? '+' : ''}${stock.pct_change}%
+            </div>
+            <div style="font-size:10px; color:${isAnomalousVol ? '#f59e0b' : '#64748b'}; font-weight:${isAnomalousVol ? '700' : '400'};">
+              Vol: ${stock.volume_multiplier}x avg ${isAnomalousVol ? '⚡' : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    container.innerHTML = `<div style="color:#ef4444; font-size:12px; padding:20px;">Error loading portfolio: ${err.message}</div>`;
+  }
+}
+
+function formatTime(isoStr) {
+  if (!isoStr) return '';
+  const d = new Date(isoStr);
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ago';
+}

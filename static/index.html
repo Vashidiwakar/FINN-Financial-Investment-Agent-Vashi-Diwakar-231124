@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FINN | Financial Investment Agent</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div id="mobile-container">
+    <!-- Sticky App Header -->
+    <header class="app-header">
+      <div class="brand-badge">
+        <span class="brand-logo">FINN</span>
+        <div>
+          <div class="brand-title">Investment Agent</div>
+          <div class="brand-sub">ENAM Intelligence Layer</div>
+        </div>
+      </div>
+      <div class="status-pill" id="threshold-toggle-btn" title="Click to configure alert thresholds">
+        <span class="pulse-dot"></span>
+        <span id="active-thresholds-text">Vol >1.8x | ±3.0%</span>
+      </div>
+    </header>
+
+    <!-- Config Modal (Thresholds) -->
+    <div id="threshold-modal" style="display: none; background: #131b2e; border: 1px solid #24324f; border-radius: 12px; margin: 12px 16px; padding: 14px; z-index: 60;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <span style="font-size: 13px; font-weight: 700; color: #f59e0b;">⚙️ Triggered Alert Thresholds</span>
+        <button id="close-modal-btn" style="background: none; border: none; color: #94a3b8; font-size: 16px; cursor: pointer;">✕</button>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Price Move Sensitivity (±X% in a day):</label>
+        <div style="display: flex; gap: 8px;">
+          <button class="pill-btn thresh-p-btn" data-val="2.0">±2.0%</button>
+          <button class="pill-btn thresh-p-btn active" data-val="3.0">±3.0%</button>
+          <button class="pill-btn thresh-p-btn" data-val="5.0">±5.0%</button>
+        </div>
+      </div>
+      <div>
+        <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Volume Surge Sensitivity (vs 20-Day Avg):</label>
+        <div style="display: flex; gap: 8px;">
+          <button class="pill-btn thresh-v-btn" data-val="1.5">1.5x</button>
+          <button class="pill-btn thresh-v-btn active" data-val="1.8">1.8x</button>
+          <button class="pill-btn thresh-v-btn" data-val="2.5">2.5x</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. PUSH MODE: THE WIRE (WINDOWED DIGEST) -->
+    <main id="view-digest" class="view-panel active">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+          <h2 style="font-size: 16px; font-weight: 800;">The Wire</h2>
+          <p style="font-size: 11px; color: #94a3b8;">Windowed Priority Digest (Past 24h across Portfolio)</p>
+        </div>
+        <span id="digest-stats-badge" style="font-size: 10px; font-family: monospace; background: #1e293b; padding: 4px 8px; border-radius: 6px; color: #38bdf8;">Loading...</span>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="filter-scroll">
+        <button class="pill-btn active" data-cat="all">All Material</button>
+        <button class="pill-btn" data-cat="results">Results</button>
+        <button class="pill-btn" data-cat="management_change">Leadership</button>
+        <button class="pill-btn" data-cat="capex">Capex</button>
+        <button class="pill-btn" data-cat="M&A">M&A</button>
+        <button class="pill-btn" data-cat="litigation">Litigation</button>
+      </div>
+
+      <!-- Feed Container -->
+      <div id="digest-feed-container">
+        <!-- Rendered by app.js -->
+      </div>
+
+      <!-- Collapsed Routine Paperwork Drawer -->
+      <div id="routine-drawer-wrap" style="margin-top: 14px;">
+        <button id="toggle-routine-btn" style="width: 100%; background: #131b2e; border: 1px dashed #24324f; border-radius: 8px; padding: 10px; color: #94a3b8; font-size: 11px; font-weight: 600; cursor: pointer; text-align: center;">
+          📁 Show 4 Suppressed Routine Filings (ESOPs, Secretarial)
+        </button>
+        <div id="routine-feed-container" style="display: none; margin-top: 10px;"></div>
+      </div>
+    </main>
+
+    <!-- 2. PUSH MODE: TRIGGERED ALERTS -->
+    <section id="view-alerts" class="view-panel">
+      <div style="margin-bottom: 14px;">
+        <h2 style="font-size: 16px; font-weight: 800;">Triggered Alerts</h2>
+        <p style="font-size: 11px; color: #94a3b8;">Threshold Breaches & Tier-1 High Conviction Events</p>
+      </div>
+      <div id="alerts-container">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- 3. PULL MODE: RESEARCH & NARRATIVE VS NUMBERS -->
+    <section id="view-research" class="view-panel">
+      <div style="margin-bottom: 12px;">
+        <h2 style="font-size: 16px; font-weight: 800;">Primary Deep Dive</h2>
+        <p style="font-size: 11px; color: #94a3b8;">Grounded in Annual Reports & Concall Transcripts</p>
+      </div>
+
+      <!-- Ticker Search -->
+      <div class="search-bar-wrap">
+        <input type="text" id="research-ticker-input" class="ticker-input" placeholder="Enter NSE Ticker (e.g. TATAMOTORS.NS)" value="TATAMOTORS.NS">
+        <button id="run-research-btn" class="btn-primary">Analyze</button>
+      </div>
+
+      <!-- Quick Tickers -->
+      <div class="quick-tickers">
+        <span class="chip-ticker active" data-sym="TATAMOTORS.NS">TATAMOTORS</span>
+        <span class="chip-ticker" data-sym="TRENT.NS">TRENT</span>
+        <span class="chip-ticker" data-sym="ZOMATO.NS">ZOMATO (Ad-hoc)</span>
+        <span class="chip-ticker" data-sym="RELIANCE.NS">RELIANCE</span>
+        <span class="chip-ticker" data-sym="DIXON.NS">DIXON</span>
+      </div>
+
+      <!-- Research Result Output -->
+      <div id="research-output-container">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- 4. PORTFOLIO RADAR (EOD Metrics) -->
+    <section id="view-portfolio" class="view-panel">
+      <div style="margin-bottom: 12px;">
+        <h2 style="font-size: 16px; font-weight: 800;">Portfolio Radar</h2>
+        <p style="font-size: 11px; color: #94a3b8;">16 Core Watchlist Stocks | EOD Price & Volume Multiples</p>
+      </div>
+      <div id="portfolio-container">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-target="view-digest">
+        <span class="nav-icon">📰</span>
+        <span>The Wire</span>
+      </button>
+      <button class="nav-item" data-target="view-alerts">
+        <span class="nav-icon">🚨</span>
+        <span>Alerts</span>
+      </button>
+      <button class="nav-item" data-target="view-research">
+        <span class="nav-icon">🔍</span>
+        <span>Deep Pull</span>
+      </button>
+      <button class="nav-item" data-target="view-portfolio">
+        <span class="nav-icon">📊</span>
+        <span>Radar</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
