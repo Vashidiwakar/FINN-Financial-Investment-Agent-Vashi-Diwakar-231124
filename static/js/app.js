@@ -68,7 +68,7 @@ function initAuth() {
     tabSignup.style.background = 'transparent';
     tabSignup.style.color = 'var(--text-secondary)';
     nameWrap.style.display = 'none';
-    submitBtn.textContent = 'Enter Terminal';
+    submitBtn.textContent = 'Enter';
   });
 
   tabSignup.addEventListener('click', () => {
@@ -83,7 +83,7 @@ function initAuth() {
   });
 
   function loginUser(name, email) {
-    const user = { name: name || 'Vashi Diwakar', email: email || 'vashi@iitk.ac.in', role: 'IIT Kanpur • 4th Year EE' };
+    const user = { name: name || 'Vashi Diwakar', email: email || 'example@example.com', role: 'IIT Kanpur' };
     localStorage.setItem('finn_auth_user', JSON.stringify(user));
     state.currentUser = user;
     authScreen.style.display = 'none';
@@ -93,7 +93,7 @@ function initAuth() {
   }
 
   demoBtn.addEventListener('click', () => {
-    loginUser('Vashi Diwakar', 'vashi@iitk.ac.in');
+    loginUser('Vashi Diwakar', 'example@example.com');
   });
 
   submitBtn.addEventListener('click', () => {
@@ -149,7 +149,33 @@ function updateUserUI() {
   const roleEl = document.getElementById('user-menu-role');
   if (avatarEl) avatarEl.textContent = initials || 'VD';
   if (nameEl) nameEl.textContent = state.currentUser.name;
-  if (roleEl) roleEl.textContent = state.currentUser.role || 'IIT Kanpur • 4th Year EE';
+  if (roleEl) roleEl.textContent = state.currentUser.role || 'IIT Kanpur';
+}
+
+// Screener Official URL Resolver
+const screenerSlugMap = {
+  'TATAMOTORS': '500570',
+  'ZOMATO': 'ETERNAL',
+};
+
+function getScreenerSlug(ticker) {
+  const clean = (ticker || '').replace('.NS', '').replace('.BO', '').trim().toUpperCase();
+  return screenerSlugMap[clean] || clean;
+}
+
+function getScreenerCompanyUrl(ticker) {
+  const slug = getScreenerSlug(ticker);
+  return `https://www.screener.in/company/${slug}/`;
+}
+
+function getScreenerDocsUrl(ticker) {
+  const slug = getScreenerSlug(ticker);
+  return `https://www.screener.in/company/${slug}/#documents`;
+}
+
+function getScreenerConcallsUrl(ticker) {
+  const slug = getScreenerSlug(ticker);
+  return `https://www.screener.in/company/${slug}/#concalls`;
 }
 
 // Primary Document Modal Viewer
@@ -171,8 +197,7 @@ function openFilingModal(itemJsonStr) {
   document.getElementById('modal-filing-title').textContent = item.title;
   document.getElementById('modal-filing-text').textContent = item.raw_text || 'Full statutory disclosure filed under Regulation 30 of SEBI (LODR) Regulations.';
   
-  const cleanSym = (item.symbol || item.ticker || '').replace('.NS', '').replace('.BO', '');
-  const portalUrl = `https://www.screener.in/company/${cleanSym}/consolidated/`;
+  const portalUrl = getScreenerCompanyUrl(item.symbol || item.ticker);
   document.getElementById('modal-portal-link').href = portalUrl;
 
   modal.style.display = 'flex';
@@ -678,9 +703,10 @@ async function runResearch(ticker) {
     const data = await res.json();
     const r = data.research;
 
-    const cleanSym = (r.symbol || ticker).replace('.NS', '').replace('.BO', '');
-    const validAnnualReportUrl = `https://www.screener.in/company/${cleanSym}/consolidated/#documents`;
-    const validConcallUrl = `https://www.screener.in/company/${cleanSym}/consolidated/#concalls`;
+    const targetSym = r.symbol || ticker;
+    const screenerUrl = getScreenerCompanyUrl(targetSym);
+    const validAnnualReportUrl = getScreenerDocsUrl(targetSym);
+    const validConcallUrl = getScreenerConcallsUrl(targetSym);
 
     container.innerHTML = `
       <!-- Company Snapshot -->
@@ -690,7 +716,7 @@ async function runResearch(ticker) {
             <div style="font-size:15px; font-weight:800; color:var(--text-primary);">${r.company_name}</div>
             <div style="font-size:10px; color:var(--text-muted); margin-bottom:5px;">${r.sector}</div>
           </div>
-          <a href="https://www.screener.in/company/${cleanSym}/consolidated/" target="_blank" style="font-size:10px; color:var(--accent-blue); text-decoration:none; font-weight:700;">
+          <a href="${screenerUrl}" target="_blank" style="font-size:10px; color:var(--accent-blue); text-decoration:none; font-weight:700;">
             Screener Page ↗
           </a>
         </div>

@@ -17,8 +17,8 @@ FACTBASES: Dict[str, Dict[str, Any]] = {
         "company_name": "Tata Motors Ltd",
         "symbol": "TATAMOTORS",
         "sector": "Automotive OEM (JLR, Commercial Vehicles, Domestic PV & EV)",
-        "annual_report_url": "https://www.screener.in/company/TATAMOTORS/consolidated/#documents",
-        "concall_transcripts_url": "https://www.screener.in/company/TATAMOTORS/consolidated/#concalls",
+        "annual_report_url": "https://www.screener.in/company/500570/#documents",
+        "concall_transcripts_url": "https://www.screener.in/company/500570/#concalls",
         "primary_sources_examined": [
             "Q2 FY27 Concall Transcript (Oct 2026)",
             "Q1 FY27 Concall Transcript (Jul 2026)",
@@ -169,8 +169,8 @@ FACTBASES: Dict[str, Dict[str, Any]] = {
         "company_name": "Zomato Ltd (Eternal)",
         "symbol": "ZOMATO",
         "sector": "Quick Commerce (Blinkit), Food Delivery, Going Out & Hyperpure",
-        "annual_report_url": "https://www.screener.in/company/ZOMATO/consolidated/#documents",
-        "concall_transcripts_url": "https://www.screener.in/company/ZOMATO/consolidated/#concalls",
+        "annual_report_url": "https://www.screener.in/company/ETERNAL/#documents",
+        "concall_transcripts_url": "https://www.screener.in/company/ETERNAL/#concalls",
         "primary_sources_examined": [
             "Q2 FY27 Shareholder Letter & Concall (Oct 2026)",
             "Q1 FY27 Shareholder Letter (Aug 2026)",
@@ -256,12 +256,14 @@ def analyze_company_fundamentals(ticker: str) -> Dict[str, Any]:
         
     # Generalized dynamic analysis for ANY arbitrary NSE ticker
     base_symbol = clean_ticker.replace(".NS", "").replace(".BO", "")
+    slug_map = {"TATAMOTORS": "500570", "ZOMATO": "ETERNAL"}
+    screener_slug = slug_map.get(base_symbol, base_symbol)
     return {
         "company_name": f"{base_symbol} Ltd",
         "symbol": base_symbol,
         "sector": "Indian Equities / Generalised Engine",
-        "annual_report_url": f"https://www.screener.in/company/{base_symbol}/consolidated/#documents",
-        "concall_transcripts_url": f"https://www.screener.in/company/{base_symbol}/consolidated/#concalls",
+        "annual_report_url": f"https://www.screener.in/company/{screener_slug}/#documents",
+        "concall_transcripts_url": f"https://www.screener.in/company/{screener_slug}/#concalls",
         "primary_sources_examined": [
             f"{base_symbol} Latest Concall Transcript (Primary Source via Screener.in)",
             f"{base_symbol} Annual Report FY26 (Exchange Disclosure)",
