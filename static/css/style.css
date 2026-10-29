@@ -82,6 +82,106 @@
   --box-shadow: rgba(0, 0, 0, 0.7);
 }
 
+/* Cyberpunk Neon Theme */
+[data-theme="cyberpunk"] {
+  --bg-primary: #0b021d;
+  --bg-secondary: #170838;
+  --bg-card: #220e4e;
+  --bg-card-hover: #2e1466;
+  --accent-gold: #ffe600;
+  --accent-blue: #00f0ff;
+  --accent-green: #05ffa1;
+  --accent-red: #ff0055;
+  --accent-purple: #b026ff;
+  --text-primary: #f0f3f8;
+  --text-secondary: #00f0ff;
+  --text-muted: #9d8ec2;
+  --border-color: #3b1b80;
+  --header-bg: rgba(11, 2, 29, 0.95);
+  --bottom-nav-bg: rgba(11, 2, 29, 0.97);
+  --box-shadow: rgba(0, 240, 255, 0.15);
+}
+
+/* Hacker Matrix Green Theme */
+[data-theme="matrix"] {
+  --bg-primary: #000000;
+  --bg-secondary: #041207;
+  --bg-card: #081f0d;
+  --bg-card-hover: #0c2e14;
+  --accent-gold: #a6e22e;
+  --accent-blue: #00ff66;
+  --accent-green: #00ff66;
+  --accent-red: #ff3333;
+  --accent-purple: #66ff99;
+  --text-primary: #00ff66;
+  --text-secondary: #52b788;
+  --text-muted: #2d6a4f;
+  --border-color: #0f4019;
+  --header-bg: rgba(0, 0, 0, 0.96);
+  --bottom-nav-bg: rgba(0, 0, 0, 0.98);
+  --box-shadow: rgba(0, 255, 102, 0.2);
+}
+
+/* Solarized Dark Theme */
+[data-theme="solarized"] {
+  --bg-primary: #002b36;
+  --bg-secondary: #073642;
+  --bg-card: #0b4554;
+  --bg-card-hover: #105466;
+  --accent-gold: #b58900;
+  --accent-blue: #268bd2;
+  --accent-green: #2aa198;
+  --accent-red: #dc322f;
+  --accent-purple: #6c71c4;
+  --text-primary: #fdf6e3;
+  --text-secondary: #93a1a1;
+  --text-muted: #657b83;
+  --border-color: #175a6c;
+  --header-bg: rgba(0, 43, 54, 0.95);
+  --bottom-nav-bg: rgba(0, 43, 54, 0.97);
+  --box-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* Financial Times / WSJ Parchment Editorial Theme */
+[data-theme="parchment"] {
+  --bg-primary: #fbf0d9;
+  --bg-secondary: #f2e2be;
+  --bg-card: #fff9ea;
+  --bg-card-hover: #ede0c2;
+  --accent-gold: #b0570b;
+  --accent-blue: #1d4ed8;
+  --accent-green: #15803d;
+  --accent-red: #b91c1c;
+  --accent-purple: #6b21a8;
+  --text-primary: #2b2014;
+  --text-secondary: #574632;
+  --text-muted: #8c7356;
+  --border-color: #e2ceaa;
+  --header-bg: rgba(251, 240, 217, 0.95);
+  --bottom-nav-bg: rgba(255, 249, 234, 0.97);
+  --box-shadow: rgba(87, 70, 50, 0.12);
+}
+
+/* Dracula Pro Theme */
+[data-theme="dracula"] {
+  --bg-primary: #21222c;
+  --bg-secondary: #282a36;
+  --bg-card: #343746;
+  --bg-card-hover: #404456;
+  --accent-gold: #f1fa8c;
+  --accent-blue: #8be9fd;
+  --accent-green: #50fa7b;
+  --accent-red: #ff5555;
+  --accent-purple: #bd93f9;
+  --text-primary: #f8f8f2;
+  --text-secondary: #bd93f9;
+  --text-muted: #6272a4;
+  --border-color: #44475a;
+  --header-bg: rgba(33, 34, 44, 0.95);
+  --bottom-nav-bg: rgba(33, 34, 44, 0.97);
+  --box-shadow: rgba(0, 0, 0, 0.6);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -222,6 +322,31 @@ body {
 @keyframes wave {
   0%, 100% { transform: scaleY(0.4); }
   50% { transform: scaleY(1); }
+}
+
+/* Audio Speed Buttons */
+.audio-speed-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 3px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.audio-speed-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-gold);
+}
+
+.audio-speed-btn.active {
+  background: var(--accent-gold);
+  color: #000;
+  border-color: var(--accent-gold);
 }
 
 .status-pill {

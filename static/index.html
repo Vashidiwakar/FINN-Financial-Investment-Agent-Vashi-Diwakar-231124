@@ -37,8 +37,8 @@
     </header>
 
     <!-- Audio Player Banner (Hidden by default, shown when playing) -->
-    <div id="audio-banner" style="display: none; background: linear-gradient(135deg, #1e293b, #0f172a); border-bottom: 1px solid #334155; padding: 10px 16px; align-items: center; justify-content: space-between;">
-      <div style="display: flex; align-items: center; gap: 10px;">
+    <div id="audio-banner" style="display: none; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 10px 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
         <div class="sound-wave">
           <span class="bar bar-1"></span>
           <span class="bar bar-2"></span>
@@ -46,11 +46,22 @@
           <span class="bar bar-4"></span>
         </div>
         <div>
-          <div style="font-size: 11px; font-weight: 700; color: #f59e0b;">FINN Morning Voice Dispatch</div>
-          <div style="font-size: 10px; color: #94a3b8;">Synthesized Executive Briefing (60s)</div>
+          <div style="font-size: 11px; font-weight: 700; color: var(--accent-gold);">FINN Voice Dispatch</div>
+          <div style="font-size: 9px; color: var(--text-muted);">Executive Briefing (60s)</div>
         </div>
       </div>
-      <button id="stop-audio-btn" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; border-radius: 6px; padding: 3px 8px; font-size: 10px; font-weight: 700; cursor: pointer;">
+
+      <!-- Audio Playback Speed Controls -->
+      <div style="display: flex; align-items: center; gap: 3px;">
+        <span style="font-size: 9px; color: var(--text-muted); font-weight: 700; margin-right: 2px;">SPEED:</span>
+        <button class="audio-speed-btn" data-speed="0.8">0.8x</button>
+        <button class="audio-speed-btn active" data-speed="1.0">1.0x</button>
+        <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+        <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+        <button class="audio-speed-btn" data-speed="2.0">2.0x</button>
+      </div>
+
+      <button id="stop-audio-btn" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--accent-red); border-radius: 6px; padding: 3px 8px; font-size: 10px; font-weight: 700; cursor: pointer;">
         Stop ⏹
       </button>
     </div>
@@ -79,24 +90,39 @@
       </div>
     </div>
 
-    <!-- Theme Selection Modal -->
+    <!-- Theme Selection Modal (9 Professional Themes) -->
     <div id="theme-modal" style="display: none; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; margin: 10px 14px; padding: 12px; z-index: 60;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--accent-gold);">🎨 Visual Interface Theme</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--accent-gold);">🎨 Visual Interface Theme (9 Themes)</span>
         <button id="close-theme-btn" style="background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">✕</button>
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-        <button class="theme-opt-btn active" data-theme="midnight" style="display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #0a0e17; color: #f8fafc; border: 1px solid #24324f; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
-          <span>🌙</span> Midnight (Dark)
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <button class="theme-opt-btn active" data-theme="midnight" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #0a0e17; color: #f8fafc; border: 1px solid #24324f; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
+          <span>🌙</span> Midnight (Default)
         </button>
-        <button class="theme-opt-btn" data-theme="light" style="display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+        <button class="theme-opt-btn" data-theme="light" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
           <span>☀️</span> Nordic Light
         </button>
-        <button class="theme-opt-btn" data-theme="bloomberg" style="display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #121212; color: #ffb703; border: 1px solid #3d3420; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+        <button class="theme-opt-btn" data-theme="bloomberg" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #121212; color: #ffb703; border: 1px solid #3d3420; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
           <span>📟</span> Bloomberg Amber
         </button>
-        <button class="theme-opt-btn" data-theme="emerald" style="display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #04140e; color: #86efac; border: 1px solid #1a563f; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+        <button class="theme-opt-btn" data-theme="emerald" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #04140e; color: #86efac; border: 1px solid #1a563f; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
           <span>🌲</span> Emerald Quant
+        </button>
+        <button class="theme-opt-btn" data-theme="cyberpunk" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #0b021d; color: #00f0ff; border: 1px solid #3b1b80; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
+          <span>⚡</span> Cyberpunk Neon
+        </button>
+        <button class="theme-opt-btn" data-theme="matrix" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #000000; color: #00ff66; border: 1px solid #0f4019; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
+          <span>💻</span> Hacker Matrix
+        </button>
+        <button class="theme-opt-btn" data-theme="solarized" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #002b36; color: #fdf6e3; border: 1px solid #175a6c; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
+          <span>🌊</span> Solarized Dark
+        </button>
+        <button class="theme-opt-btn" data-theme="parchment" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #fbf0d9; color: #2b2014; border: 1px solid #e2ceaa; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
+          <span>📜</span> FT / WSJ Paper
+        </button>
+        <button class="theme-opt-btn" data-theme="dracula" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #21222c; color: #bd93f9; border: 1px solid #44475a; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer; grid-column: span 2;">
+          <span>🧛</span> Dracula Pro
         </button>
       </div>
     </div>

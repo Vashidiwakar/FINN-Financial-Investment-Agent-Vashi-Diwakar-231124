@@ -1,4 +1,4 @@
-// FINN - Financial Investment Agent Mobile Client (v1.2.0)
+// FINN - Financial Investment Agent Mobile Client (v1.3.0)
 let state = {
   priceThreshold: 3.0,
   volThreshold: 1.8,
@@ -6,6 +6,8 @@ let state = {
   activeTicker: 'TATAMOTORS.NS',
   showRoutine: false,
   isPlayingAudio: false,
+  audioSpeed: parseFloat(localStorage.getItem('finn_audio_speed')) || 1.0,
+  lastAudioScript: '',
   speechSynthUtterance: null,
   currentTheme: 'midnight'
 };
@@ -68,7 +70,12 @@ function applyTheme(theme) {
     midnight: '🌙',
     light: '☀️',
     bloomberg: '📟',
-    emerald: '🌲'
+    emerald: '🌲',
+    cyberpunk: '⚡',
+    matrix: '💻',
+    solarized: '🌊',
+    parchment: '📜',
+    dracula: '🧛'
   };
 
   const iconEl = document.getElementById('theme-icon');
@@ -112,6 +119,28 @@ function initAudioDispatch() {
   const banner = document.getElementById('audio-banner');
   const stopBtn = document.getElementById('stop-audio-btn');
 
+  // Set initial active speed button
+  document.querySelectorAll('.audio-speed-btn').forEach(btn => {
+    const spd = parseFloat(btn.getAttribute('data-speed'));
+    if (spd === state.audioSpeed) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.audio-speed-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.audioSpeed = parseFloat(btn.getAttribute('data-speed'));
+      localStorage.setItem('finn_audio_speed', state.audioSpeed);
+      showToast(`Playback speed: ${state.audioSpeed}x`);
+
+      if (state.isPlayingAudio && state.lastAudioScript) {
+        playVoiceBriefing(state.lastAudioScript);
+      }
+    });
+  });
+
   toggleBtn.addEventListener('click', async () => {
     if (state.isPlayingAudio) {
       stopAudio();
@@ -121,6 +150,7 @@ function initAudioDispatch() {
     try {
       const res = await fetch('/api/audio-dispatch');
       const data = await res.json();
+      state.lastAudioScript = data.script;
       playVoiceBriefing(data.script);
     } catch (e) {
       showToast('Error playing audio brief');
@@ -136,15 +166,16 @@ function playVoiceBriefing(text) {
     return;
   }
 
+  state.lastAudioScript = text;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = 1.05; // Slightly faster executive pace
+  utterance.rate = state.audioSpeed || 1.0;
   utterance.pitch = 0.95;
 
   utterance.onstart = () => {
     state.isPlayingAudio = true;
     document.getElementById('audio-banner').style.display = 'flex';
-    document.getElementById('audio-label').textContent = 'Playing...';
+    document.getElementById('audio-label').textContent = `${state.audioSpeed}x Playing`;
   };
 
   utterance.onend = stopAudio;
