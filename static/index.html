@@ -12,259 +12,350 @@
 </head>
 <body>
   <div id="mobile-container">
-    <!-- Sticky App Header -->
-    <header class="app-header">
-      <div class="brand-badge">
-        <span class="brand-logo">FINN</span>
-        <div>
-          <div class="brand-title">Investment Agent</div>
-          <div class="brand-sub">ENAM Intelligence Layer</div>
+    
+    <!-- 0. AUTHENTICATION GATE (LOGIN & SIGN UP) -->
+    <div id="auth-screen" style="display: flex; flex-direction: column; justify-content: center; min-height: 100vh; padding: 24px;">
+      <div style="text-align: center; margin-bottom: 28px;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 14px; background: linear-gradient(135deg, var(--accent-gold), var(--accent-blue)); color: #fff; font-weight: 900; font-size: 22px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4);">
+          FINN
         </div>
+        <h1 style="font-size: 20px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px;">ENAM Holdings</h1>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Institutional Intelligence Layer for Public Markets</p>
       </div>
-      <div style="display: flex; gap: 6px; align-items: center;">
-        <button id="theme-toggle-btn" class="theme-pill-btn" title="Toggle Theme (Midnight / Light / Bloomberg / Emerald)">
-          <span id="theme-icon">🌙</span>
+
+      <div class="card" style="padding: 20px;">
+        <!-- Auth Tabs: Login vs Register -->
+        <div style="display: flex; background: var(--bg-secondary); border-radius: 8px; padding: 3px; margin-bottom: 16px; border: 1px solid var(--border-color);">
+          <button id="tab-login" class="pill-btn active" style="flex: 1; border-radius: 6px; padding: 7px 0; text-align: center; font-size: 11px;">Sign In</button>
+          <button id="tab-signup" class="pill-btn" style="flex: 1; border-radius: 6px; padding: 7px 0; text-align: center; font-size: 11px; background: transparent; color: var(--text-secondary); border: none;">Create Account</button>
+        </div>
+
+        <form id="auth-form" onsubmit="return false;">
+          <div id="signup-name-wrap" style="display: none; margin-bottom: 12px;">
+            <label style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Full Name</label>
+            <input type="text" id="auth-name" class="ticker-input" placeholder="e.g. Sachin Kumar" style="width: 100%; margin-top: 4px;">
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Work Email</label>
+            <input type="email" id="auth-email" class="ticker-input" placeholder="analyst@enam.com" value="analyst@enam.com" style="width: 100%; margin-top: 4px;">
+          </div>
+
+          <div style="margin-bottom: 18px;">
+            <label style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Password</label>
+            <input type="password" id="auth-password" class="ticker-input" placeholder="••••••••" value="password123" style="width: 100%; margin-top: 4px;">
+          </div>
+
+          <button id="auth-submit-btn" class="btn-primary" style="width: 100%; padding: 11px; font-size: 13px; font-weight: 700; border-radius: 8px;">
+            Enter Terminal
+          </button>
+        </form>
+
+        <div style="text-align: center; margin: 16px 0 12px 0; font-size: 10px; color: var(--text-muted); position: relative;">
+          <span>— OR EVALUATOR ACCESS —</span>
+        </div>
+
+        <button id="demo-login-btn" style="width: 100%; background: var(--bg-secondary); border: 1px dashed var(--accent-gold); color: var(--accent-gold); font-size: 12px; font-weight: 700; padding: 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          One-Click Demo Sign In (ENAM Analyst)
         </button>
-        <button id="audio-dispatch-toggle" class="audio-pill-btn" title="Listen to 60-Second Morning Dispatch">
-          <span class="audio-icon">▶</span>
-          <span id="audio-label">Listen 60s</span>
-        </button>
-        <div class="status-pill" id="threshold-toggle-btn" title="Click to configure alert thresholds">
-          <span class="pulse-dot"></span>
-          <span id="active-thresholds-text">Vol >1.8x | ±3.0%</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- Audio Player Banner (Hidden by default, shown when playing) -->
-    <div id="audio-banner" style="display: none; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 10px 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <div class="sound-wave">
-          <span class="bar bar-1"></span>
-          <span class="bar bar-2"></span>
-          <span class="bar bar-3"></span>
-          <span class="bar bar-4"></span>
-        </div>
-        <div>
-          <div style="font-size: 11px; font-weight: 700; color: var(--accent-gold);">FINN Voice Dispatch</div>
-          <div style="font-size: 9px; color: var(--text-muted);">Executive Briefing (60s)</div>
-        </div>
       </div>
 
-      <!-- Audio Playback Speed Controls -->
-      <div style="display: flex; align-items: center; gap: 3px;">
-        <span style="font-size: 9px; color: var(--text-muted); font-weight: 700; margin-right: 2px;">SPEED:</span>
-        <button class="audio-speed-btn" data-speed="0.8">0.8x</button>
-        <button class="audio-speed-btn active" data-speed="1.0">1.0x</button>
-        <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
-        <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
-        <button class="audio-speed-btn" data-speed="2.0">2.0x</button>
-      </div>
-
-      <button id="stop-audio-btn" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--accent-red); border-radius: 6px; padding: 3px 8px; font-size: 10px; font-weight: 700; cursor: pointer;">
-        Stop ⏹
-      </button>
-    </div>
-
-    <!-- Threshold Configuration Modal -->
-    <div id="threshold-modal" style="display: none; background: #131b2e; border: 1px solid #24324f; border-radius: 12px; margin: 12px 16px; padding: 14px; z-index: 60;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <span style="font-size: 13px; font-weight: 700; color: #f59e0b;">⚙️ Triggered Alert Thresholds</span>
-        <button id="close-modal-btn" style="background: none; border: none; color: #94a3b8; font-size: 16px; cursor: pointer;">✕</button>
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Price Move Sensitivity (±X% in a day):</label>
-        <div style="display: flex; gap: 8px;">
-          <button class="pill-btn thresh-p-btn" data-val="2.0">±2.0%</button>
-          <button class="pill-btn thresh-p-btn active" data-val="3.0">±3.0%</button>
-          <button class="pill-btn thresh-p-btn" data-val="5.0">±5.0%</button>
-        </div>
-      </div>
-      <div>
-        <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Volume Surge Sensitivity (vs 20-Day Avg):</label>
-        <div style="display: flex; gap: 8px;">
-          <button class="pill-btn thresh-v-btn" data-val="1.5">1.5x</button>
-          <button class="pill-btn thresh-v-btn active" data-val="1.8">1.8x</button>
-          <button class="pill-btn thresh-v-btn" data-val="2.5">2.5x</button>
-        </div>
+      <div style="text-align: center; margin-top: 20px; font-size: 10px; color: var(--text-muted);">
+        Encrypted Session • High-Conviction Public Markets Intelligence
       </div>
     </div>
 
-    <!-- Theme Selection Modal (9 Professional Themes) -->
-    <div id="theme-modal" style="display: none; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; margin: 10px 14px; padding: 12px; z-index: 60;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--accent-gold);">🎨 Visual Interface Theme (9 Themes)</span>
-        <button id="close-theme-btn" style="background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">✕</button>
-      </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-        <button class="theme-opt-btn active" data-theme="midnight" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #0a0e17; color: #f8fafc; border: 1px solid #24324f; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
-          <span>🌙</span> Midnight (Default)
-        </button>
-        <button class="theme-opt-btn" data-theme="light" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
-          <span>☀️</span> Nordic Light
-        </button>
-        <button class="theme-opt-btn" data-theme="bloomberg" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #121212; color: #ffb703; border: 1px solid #3d3420; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
-          <span>📟</span> Bloomberg Amber
-        </button>
-        <button class="theme-opt-btn" data-theme="emerald" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #04140e; color: #86efac; border: 1px solid #1a563f; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
-          <span>🌲</span> Emerald Quant
-        </button>
-        <button class="theme-opt-btn" data-theme="cyberpunk" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #0b021d; color: #00f0ff; border: 1px solid #3b1b80; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
-          <span>⚡</span> Cyberpunk Neon
-        </button>
-        <button class="theme-opt-btn" data-theme="matrix" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #000000; color: #00ff66; border: 1px solid #0f4019; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
-          <span>💻</span> Hacker Matrix
-        </button>
-        <button class="theme-opt-btn" data-theme="solarized" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #002b36; color: #fdf6e3; border: 1px solid #175a6c; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
-          <span>🌊</span> Solarized Dark
-        </button>
-        <button class="theme-opt-btn" data-theme="parchment" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #fbf0d9; color: #2b2014; border: 1px solid #e2ceaa; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">
-          <span>📜</span> FT / WSJ Paper
-        </button>
-        <button class="theme-opt-btn" data-theme="dracula" style="display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: #21222c; color: #bd93f9; border: 1px solid #44475a; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer; grid-column: span 2;">
-          <span>🧛</span> Dracula Pro
-        </button>
-      </div>
-    </div>
-
-    <!-- Toast Notification for Quick Actions -->
-    <div id="toast-notify" style="display: none; position: fixed; top: 60px; left: 50%; transform: translateX(-50%); background: #10b981; color: #000; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
-      Copied to Clipboard!
-    </div>
-
-    <!-- 1. PUSH MODE: THE WIRE (WINDOWED DIGEST) -->
-    <main id="view-digest" class="view-panel active">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-        <div>
-          <h2 style="font-size: 16px; font-weight: 800;">The Wire</h2>
-          <p style="font-size: 11px; color: #94a3b8;">Windowed Priority Digest (24h across Portfolio)</p>
+    <!-- MAIN AGENT INTERFACE (REVEALED AFTER AUTH) -->
+    <div id="main-terminal" style="display: none;">
+      <!-- Sticky App Header -->
+      <header class="app-header">
+        <div class="brand-badge">
+          <span class="brand-logo">FINN</span>
+          <div>
+            <div class="brand-title">Investment Agent</div>
+            <div class="brand-sub">ENAM Intelligence Layer</div>
+          </div>
         </div>
-        <button id="copy-memo-btn" style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.35); color: #60a5fa; border-radius: 8px; padding: 4px 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-          <span>📋</span> Share Memo
-        </button>
-      </div>
 
-      <!-- Category Filter Pills -->
-      <div class="filter-scroll">
-        <button class="pill-btn active" data-cat="all">All Material</button>
-        <button class="pill-btn" data-cat="results">Results</button>
-        <button class="pill-btn" data-cat="management_change">Leadership</button>
-        <button class="pill-btn" data-cat="capex">Capex</button>
-        <button class="pill-btn" data-cat="M&A">M&A</button>
-        <button class="pill-btn" data-cat="litigation">Litigation</button>
-      </div>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <!-- Theme Switcher -->
+          <button id="theme-toggle-btn" class="theme-pill-btn" title="Toggle Visual Palette">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
 
-      <!-- Feed Container -->
-      <div id="digest-feed-container"></div>
+          <!-- Voice Dispatch Button -->
+          <button id="audio-dispatch-toggle" class="audio-pill-btn" title="Listen to 60-Second Morning Dispatch">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <span id="audio-label">Listen 60s</span>
+          </button>
 
-      <!-- Collapsed Routine Paperwork Drawer -->
-      <div id="routine-drawer-wrap" style="margin-top: 14px;">
-        <button id="toggle-routine-btn" style="width: 100%; background: #131b2e; border: 1px dashed #24324f; border-radius: 8px; padding: 10px; color: #94a3b8; font-size: 11px; font-weight: 600; cursor: pointer; text-align: center;">
-          📁 Show 4 Suppressed Routine Filings (ESOPs, Secretarial)
-        </button>
-        <div id="routine-feed-container" style="display: none; margin-top: 10px;"></div>
-      </div>
-    </main>
+          <!-- Threshold Settings Pill -->
+          <div class="status-pill" id="threshold-toggle-btn" title="Configure Alert Thresholds">
+            <span class="pulse-dot"></span>
+            <span id="active-thresholds-text">Vol >1.8x | ±3%</span>
+          </div>
 
-    <!-- 2. PUSH MODE: TRIGGERED ALERTS -->
-    <section id="view-alerts" class="view-panel">
-      <div style="margin-bottom: 14px;">
-        <h2 style="font-size: 16px; font-weight: 800;">Triggered Alerts</h2>
-        <p style="font-size: 11px; color: #94a3b8;">Threshold Breaches & Tier-1 High Conviction Events</p>
-      </div>
-      <div id="alerts-container"></div>
-    </section>
+          <!-- User Sign Out Badge -->
+          <button id="user-profile-btn" style="background: none; border: none; cursor: pointer; padding: 2px;" title="User Menu / Sign Out">
+            <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: var(--accent-blue);" id="user-avatar-initials">
+              SK
+            </div>
+          </button>
+        </div>
+      </header>
 
-    <!-- 3. PULL MODE: RESEARCH & NARRATIVE VS NUMBERS -->
-    <section id="view-research" class="view-panel">
-      <div style="margin-bottom: 12px;">
-        <h2 style="font-size: 16px; font-weight: 800;">Primary Deep Dive</h2>
-        <p style="font-size: 11px; color: #94a3b8;">Grounded in Annual Reports & Concall Transcripts</p>
-      </div>
-
-      <!-- Ticker Search -->
-      <div class="search-bar-wrap">
-        <input type="text" id="research-ticker-input" class="ticker-input" placeholder="Enter NSE Ticker (e.g. TATAMOTORS.NS)" value="TATAMOTORS.NS">
-        <button id="run-research-btn" class="btn-primary">Analyze</button>
-      </div>
-
-      <!-- Quick Tickers -->
-      <div class="quick-tickers">
-        <span class="chip-ticker active" data-sym="TATAMOTORS.NS">TATAMOTORS</span>
-        <span class="chip-ticker" data-sym="TRENT.NS">TRENT</span>
-        <span class="chip-ticker" data-sym="ZOMATO.NS">ZOMATO (Ad-hoc)</span>
-        <span class="chip-ticker" data-sym="DIXON.NS">DIXON</span>
-        <span class="chip-ticker" data-sym="RELIANCE.NS">RELIANCE</span>
-      </div>
-
-      <!-- Research Result Output -->
-      <div id="research-output-container"></div>
-    </section>
-
-    <!-- 4. PORTFOLIO RADAR (EOD Metrics + Sparklines) -->
-    <section id="view-portfolio" class="view-panel">
-      <div style="margin-bottom: 12px;">
-        <h2 style="font-size: 16px; font-weight: 800;">Portfolio Radar</h2>
-        <p style="font-size: 11px; color: #94a3b8;">16 Core Watchlist Stocks | EOD Price & 20-Day Trend</p>
-      </div>
-      <div id="portfolio-container"></div>
-    </section>
-
-    <!-- Floating Interactive Copilot Button -->
-    <div id="copilot-floating-btn" title="Ask FINN Financial Analyst">
-      <span style="font-size: 18px;">💬</span>
-      <span style="font-size: 11px; font-weight: 700;">Ask FINN</span>
-    </div>
-
-    <!-- Copilot Drawer Modal -->
-    <div id="copilot-drawer" style="display: none; position: fixed; bottom: 65px; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: #0f172a; border-top: 1px solid #334155; border-radius: 16px 16px 0 0; padding: 16px; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); z-index: 120;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <!-- Audio Player Banner -->
+      <div id="audio-banner" style="display: none; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 10px 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #3b82f6; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">COPILOT</span>
-          <span style="font-size: 13px; font-weight: 700; color: #f8fafc;">Primary-Source Analyst</span>
+          <div class="sound-wave">
+            <span class="bar bar-1"></span>
+            <span class="bar bar-2"></span>
+            <span class="bar bar-3"></span>
+            <span class="bar bar-4"></span>
+          </div>
+          <div>
+            <div style="font-size: 11px; font-weight: 700; color: var(--accent-gold);">FINN Voice Dispatch</div>
+            <div style="font-size: 9px; color: var(--text-muted);">Executive Briefing (60s)</div>
+          </div>
         </div>
-        <button id="close-copilot-btn" style="background: none; border: none; color: #94a3b8; font-size: 18px; cursor: pointer;">✕</button>
+
+        <!-- Audio Speed Controls -->
+        <div style="display: flex; align-items: center; gap: 3px;">
+          <span style="font-size: 8px; color: var(--text-muted); font-weight: 700;">SPEED:</span>
+          <button class="audio-speed-btn" data-speed="0.8">0.8x</button>
+          <button class="audio-speed-btn active" data-speed="1.0">1.0x</button>
+          <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+          <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+          <button class="audio-speed-btn" data-speed="2.0">2.0x</button>
+        </div>
+
+        <button id="stop-audio-btn" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--accent-red); border-radius: 6px; padding: 3px 8px; font-size: 10px; font-weight: 700; cursor: pointer;">
+          Stop
+        </button>
       </div>
 
-      <!-- Quick Prompt Suggestions -->
-      <div style="display: flex; gap: 6px; overflow-x: auto; margin-bottom: 10px; padding-bottom: 4px; scrollbar-width: none;">
-        <button class="copilot-pill" data-q="What did Tata Motors say about JLR margins?">JLR Margins</button>
-        <button class="copilot-pill" data-q="What is Trent's Zudio store addition guidance?">Trent Zudio Plan</button>
-        <button class="copilot-pill" data-q="What is Zomato Blinkit dark store target?">Blinkit Dark Stores</button>
-        <button class="copilot-pill" data-q="Does Tata Motors convert profit to liquid cash?">Cash Quality Check</button>
-      </div>
-
-      <div id="copilot-chat-history" style="max-height: 220px; overflow-y: auto; margin-bottom: 10px; font-size: 12px; color: #cbd5e1; line-height: 1.45;">
-        <div style="background: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 6px; border-left: 3px solid #3b82f6;">
-          Ask any specific question about guidance, capex, segment margins, or concall statements. Grounded strictly in primary documents.
+      <!-- User Account Dropdown Modal -->
+      <div id="user-menu-modal" style="display: none; position: absolute; top: 54px; right: 14px; width: 200px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; z-index: 150; box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+        <div style="font-size: 12px; font-weight: 700; color: var(--text-primary);" id="user-menu-name">Sachin Kumar</div>
+        <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 8px;" id="user-menu-role">Institutional Equity Analyst</div>
+        <div style="border-top: 1px solid var(--border-color); padding-top: 8px;">
+          <button id="signout-btn" style="width: 100%; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--accent-red); padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+            Sign Out
+          </button>
         </div>
       </div>
 
-      <div style="display: flex; gap: 8px;">
-        <input type="text" id="copilot-input" class="ticker-input" placeholder="Ask about guidance, margins, cash flow..." style="font-size: 12px; padding: 8px 12px;">
-        <button id="copilot-send-btn" class="btn-primary" style="padding: 0 14px; font-size: 12px;">Ask</button>
+      <!-- Threshold Configuration Modal -->
+      <div id="threshold-modal" style="display: none; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; margin: 10px 14px; padding: 12px; z-index: 60;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 12px; font-weight: 700; color: var(--accent-gold);">Alert Sensitivity Thresholds</span>
+          <button id="close-modal-btn" style="background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">✕</button>
+        </div>
+        <div style="margin-bottom: 8px;">
+          <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 3px;">Daily Price Movement Sensitivity (±X%):</label>
+          <div style="display: flex; gap: 6px;">
+            <button class="pill-btn thresh-p-btn" data-val="2.0">±2.0%</button>
+            <button class="pill-btn thresh-p-btn active" data-val="3.0">±3.0%</button>
+            <button class="pill-btn thresh-p-btn" data-val="5.0">±5.0%</button>
+          </div>
+        </div>
+        <div>
+          <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 3px;">Volume Surge Threshold (vs 20-Day Baseline):</label>
+          <div style="display: flex; gap: 6px;">
+            <button class="pill-btn thresh-v-btn" data-val="1.5">1.5x</button>
+            <button class="pill-btn thresh-v-btn active" data-val="1.8">1.8x</button>
+            <button class="pill-btn thresh-v-btn" data-val="2.5">2.5x</button>
+          </div>
+        </div>
       </div>
+
+      <!-- Theme Selection Modal (9 Professional Themes) -->
+      <div id="theme-modal" style="display: none; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; margin: 10px 14px; padding: 12px; z-index: 60;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 12px; font-weight: 700; color: var(--accent-gold);">Visual Palette (9 Themes)</span>
+          <button id="close-theme-btn" style="background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">✕</button>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+          <button class="theme-opt-btn active" data-theme="midnight">Midnight (Default)</button>
+          <button class="theme-opt-btn" data-theme="light">Nordic Light</button>
+          <button class="theme-opt-btn" data-theme="bloomberg">Bloomberg Amber</button>
+          <button class="theme-opt-btn" data-theme="emerald">Emerald Quant</button>
+          <button class="theme-opt-btn" data-theme="cyberpunk">Cyberpunk Neon</button>
+          <button class="theme-opt-btn" data-theme="matrix">Hacker Matrix</button>
+          <button class="theme-opt-btn" data-theme="solarized">Solarized Dark</button>
+          <button class="theme-opt-btn" data-theme="parchment">FT / WSJ Paper</button>
+          <button class="theme-opt-btn" data-theme="dracula" style="grid-column: span 2;">Dracula Pro</button>
+        </div>
+      </div>
+
+      <!-- Toast Notification -->
+      <div id="toast-notify" style="display: none; position: fixed; top: 60px; left: 50%; transform: translateX(-50%); background: var(--accent-green); color: #000; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+        Action Completed
+      </div>
+
+      <!-- PRIMARY FILING DOCUMENT VIEWER MODAL -->
+      <div id="filing-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; padding: 16px;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 440px; max-height: 85vh; overflow-y: auto; padding: 18px; position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: var(--accent-blue); text-transform: uppercase;" id="modal-exchange-ref">EXCHANGE FILING</div>
+              <h3 style="font-size: 14px; font-weight: 800; color: var(--text-primary); margin-top: 2px;" id="modal-company-title">Company Disclosure</h3>
+            </div>
+            <button id="close-filing-modal" style="background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer;">✕</button>
+          </div>
+          
+          <div style="font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px;" id="modal-filing-title">Title</div>
+          <div style="background: var(--bg-secondary); border-left: 3px solid var(--accent-blue); padding: 10px; border-radius: 6px; font-size: 11px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 14px;" id="modal-filing-text">
+            Filing content...
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <a id="modal-portal-link" href="#" target="_blank" class="btn-primary" style="flex: 1; text-align: center; text-decoration: none; padding: 9px; font-size: 11px; border-radius: 6px;">
+              Open Screener Financials ↗
+            </a>
+            <a href="https://www.bseindia.com/corporates/ann.html" target="_blank" style="flex: 1; text-align: center; text-decoration: none; padding: 9px; font-size: 11px; border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+              BSE Live Feed ↗
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. PUSH MODE: THE WIRE (WINDOWED DIGEST) -->
+      <main id="view-digest" class="view-panel active">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div>
+            <h2 style="font-size: 15px; font-weight: 800;">The Wire</h2>
+            <p style="font-size: 10px; color: var(--text-muted);">Priority Corporate Filings (Past 24h)</p>
+          </div>
+          <button id="copy-memo-btn" style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--accent-blue); border-radius: 8px; padding: 4px 9px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Export Memo
+          </button>
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div class="filter-scroll">
+          <button class="pill-btn active" data-cat="all">All Signals</button>
+          <button class="pill-btn" data-cat="results">Results</button>
+          <button class="pill-btn" data-cat="management_change">Leadership</button>
+          <button class="pill-btn" data-cat="capex">Capex</button>
+          <button class="pill-btn" data-cat="M&A">M&A</button>
+          <button class="pill-btn" data-cat="litigation">Litigation</button>
+        </div>
+
+        <!-- Feed Container -->
+        <div id="digest-feed-container"></div>
+
+        <!-- Collapsed Routine Paperwork Drawer -->
+        <div id="routine-drawer-wrap" style="margin-top: 14px;">
+          <button id="toggle-routine-btn" style="width: 100%; background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; padding: 9px; color: var(--text-muted); font-size: 11px; font-weight: 600; cursor: pointer; text-align: center;">
+            📁 4 Suppressed Routine Filings (ESOPs, Compliances)
+          </button>
+          <div id="routine-feed-container" style="display: none; margin-top: 10px;"></div>
+        </div>
+      </main>
+
+      <!-- 2. PUSH MODE: TRIGGERED ALERTS -->
+      <section id="view-alerts" class="view-panel">
+        <div style="margin-bottom: 12px;">
+          <h2 style="font-size: 15px; font-weight: 800;">Triggered Alerts</h2>
+          <p style="font-size: 10px; color: var(--text-muted);">Threshold Breaches & Tier-1 High Conviction Events</p>
+        </div>
+        <div id="alerts-container"></div>
+      </section>
+
+      <!-- 3. PULL MODE: RESEARCH & NARRATIVE VS NUMBERS -->
+      <section id="view-research" class="view-panel">
+        <div style="margin-bottom: 12px;">
+          <h2 style="font-size: 15px; font-weight: 800;">Primary Research</h2>
+          <p style="font-size: 10px; color: var(--text-muted);">Grounded in Audited Annual Reports & Concall Transcripts</p>
+        </div>
+
+        <!-- Ticker Search -->
+        <div class="search-bar-wrap">
+          <input type="text" id="research-ticker-input" class="ticker-input" placeholder="NSE Ticker (e.g. TATAMOTORS.NS)" value="TATAMOTORS.NS">
+          <button id="run-research-btn" class="btn-primary">Audit</button>
+        </div>
+
+        <!-- Quick Tickers -->
+        <div class="quick-tickers">
+          <span class="chip-ticker active" data-sym="TATAMOTORS.NS">TATAMOTORS</span>
+          <span class="chip-ticker" data-sym="TRENT.NS">TRENT</span>
+          <span class="chip-ticker" data-sym="ZOMATO.NS">ZOMATO</span>
+          <span class="chip-ticker" data-sym="DIXON.NS">DIXON</span>
+          <span class="chip-ticker" data-sym="RELIANCE.NS">RELIANCE</span>
+        </div>
+
+        <!-- Research Result Output -->
+        <div id="research-output-container"></div>
+      </section>
+
+      <!-- 4. PORTFOLIO RADAR (EOD Metrics + Sparklines) -->
+      <section id="view-portfolio" class="view-panel">
+        <div style="margin-bottom: 12px;">
+          <h2 style="font-size: 15px; font-weight: 800;">Portfolio Radar</h2>
+          <p style="font-size: 10px; color: var(--text-muted);">16 Watchlist Stocks | EOD Price & 20-Day Trend</p>
+        </div>
+        <div id="portfolio-container"></div>
+      </section>
+
+      <!-- Floating Interactive Copilot Button -->
+      <div id="copilot-floating-btn" title="Ask Primary Analyst Copilot">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span style="font-size: 11px; font-weight: 700;">Copilot</span>
+      </div>
+
+      <!-- Copilot Drawer Modal -->
+      <div id="copilot-drawer" style="display: none; position: fixed; bottom: 65px; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: var(--bg-card); border-top: 1px solid var(--border-color); border-radius: 16px 16px 0 0; padding: 14px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); z-index: 120;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="background: var(--accent-blue); color: #fff; font-size: 9px; font-weight: 800; padding: 2px 5px; border-radius: 4px;">ANALYST</span>
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-primary);">Primary-Source Copilot</span>
+          </div>
+          <button id="close-copilot-btn" style="background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">✕</button>
+        </div>
+
+        <div style="display: flex; gap: 5px; overflow-x: auto; margin-bottom: 8px; padding-bottom: 4px; scrollbar-width: none;">
+          <button class="copilot-pill" data-q="What did Tata Motors say about JLR margins?">JLR Margin Delivery</button>
+          <button class="copilot-pill" data-q="What is Trent's Zudio store addition guidance?">Trent Zudio Plan</button>
+          <button class="copilot-pill" data-q="What is Zomato Blinkit dark store target?">Blinkit Dark Stores</button>
+          <button class="copilot-pill" data-q="Does Tata Motors convert profit to liquid cash?">Cash Quality Check</button>
+        </div>
+
+        <div id="copilot-chat-history" style="max-height: 200px; overflow-y: auto; margin-bottom: 8px; font-size: 11px; color: var(--text-secondary); line-height: 1.45;">
+          <div style="background: var(--bg-secondary); padding: 8px; border-radius: 6px; margin-bottom: 6px; border-left: 3px solid var(--accent-blue);">
+            Ask ad-hoc questions on guidance, capex, segment margins, or concall commentary. Grounded strictly in primary documents.
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="copilot-input" class="ticker-input" placeholder="Ask about guidance, margins, cash flow..." style="font-size: 11px; padding: 7px 10px;">
+          <button id="copilot-send-btn" class="btn-primary" style="padding: 0 12px; font-size: 11px;">Ask</button>
+        </div>
+      </div>
+
+      <!-- Bottom Navigation Bar with Clean SVG Icons -->
+      <nav class="bottom-nav">
+        <button class="nav-item active" data-target="view-digest">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>
+          <span>The Wire</span>
+        </button>
+        <button class="nav-item" data-target="view-alerts">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span>Alerts</span>
+        </button>
+        <button class="nav-item" data-target="view-research">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>Deep Pull</span>
+        </button>
+        <button class="nav-item" data-target="view-portfolio">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+          <span>Radar</span>
+        </button>
+      </nav>
     </div>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="bottom-nav">
-      <button class="nav-item active" data-target="view-digest">
-        <span class="nav-icon">📰</span>
-        <span>The Wire</span>
-      </button>
-      <button class="nav-item" data-target="view-alerts">
-        <span class="nav-icon">🚨</span>
-        <span>Alerts</span>
-      </button>
-      <button class="nav-item" data-target="view-research">
-        <span class="nav-icon">🔍</span>
-        <span>Deep Pull</span>
-      </button>
-      <button class="nav-item" data-target="view-portfolio">
-        <span class="nav-icon">📊</span>
-        <span>Radar</span>
-      </button>
-    </nav>
   </div>
 
   <script src="/static/js/app.js"></script>

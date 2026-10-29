@@ -1,4 +1,4 @@
-// FINN - Financial Investment Agent Mobile Client (v1.3.0)
+// FINN - Financial Investment Agent Mobile Client (v1.4.0)
 let state = {
   priceThreshold: 3.0,
   volThreshold: 1.8,
@@ -9,10 +9,12 @@ let state = {
   audioSpeed: parseFloat(localStorage.getItem('finn_audio_speed')) || 1.0,
   lastAudioScript: '',
   speechSynthUtterance: null,
-  currentTheme: 'midnight'
+  currentTheme: 'midnight',
+  currentUser: null
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  initAuth();
   initThemes();
   initNav();
   initThresholds();
@@ -21,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAudioDispatch();
   initWhatsAppShare();
   initCopilotDrawer();
+  initFilingModal();
   
   // Initial data load
   loadDigest();
@@ -28,6 +31,135 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPortfolio();
   runResearch(state.activeTicker);
 });
+
+// Authentication System
+function initAuth() {
+  const authScreen = document.getElementById('auth-screen');
+  const mainTerminal = document.getElementById('main-terminal');
+  const demoBtn = document.getElementById('demo-login-btn');
+  const submitBtn = document.getElementById('auth-submit-btn');
+  const tabLogin = document.getElementById('tab-login');
+  const tabSignup = document.getElementById('tab-signup');
+  const nameWrap = document.getElementById('signup-name-wrap');
+  const userBtn = document.getElementById('user-profile-btn');
+  const userMenu = document.getElementById('user-menu-modal');
+  const signoutBtn = document.getElementById('signout-btn');
+
+  tabLogin.addEventListener('click', () => {
+    tabLogin.classList.add('active');
+    tabLogin.style.background = 'var(--accent-blue)';
+    tabLogin.style.color = '#fff';
+    tabSignup.classList.remove('active');
+    tabSignup.style.background = 'transparent';
+    tabSignup.style.color = 'var(--text-secondary)';
+    nameWrap.style.display = 'none';
+    submitBtn.textContent = 'Enter Terminal';
+  });
+
+  tabSignup.addEventListener('click', () => {
+    tabSignup.classList.add('active');
+    tabSignup.style.background = 'var(--accent-blue)';
+    tabSignup.style.color = '#fff';
+    tabLogin.classList.remove('active');
+    tabLogin.style.background = 'transparent';
+    tabLogin.style.color = 'var(--text-secondary)';
+    nameWrap.style.display = 'block';
+    submitBtn.textContent = 'Create Analyst Account';
+  });
+
+  function loginUser(name, email) {
+    const user = { name: name || 'Sachin Kumar', email: email || 'analyst@enam.com' };
+    localStorage.setItem('finn_auth_user', JSON.stringify(user));
+    state.currentUser = user;
+    authScreen.style.display = 'none';
+    mainTerminal.style.display = 'block';
+    updateUserUI();
+    showToast(`Welcome, ${user.name}`);
+  }
+
+  demoBtn.addEventListener('click', () => {
+    loginUser('Sachin Kumar', 'analyst@enam.com');
+  });
+
+  submitBtn.addEventListener('click', () => {
+    const email = document.getElementById('auth-email').value;
+    const name = document.getElementById('auth-name').value;
+    loginUser(name, email);
+  });
+
+  if (userBtn) {
+    userBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.style.display = userMenu.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+
+  document.addEventListener('click', () => {
+    if (userMenu) userMenu.style.display = 'none';
+  });
+
+  if (signoutBtn) {
+    signoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('finn_auth_user');
+      state.currentUser = null;
+      userMenu.style.display = 'none';
+      mainTerminal.style.display = 'none';
+      authScreen.style.display = 'flex';
+      showToast('Signed Out');
+    });
+  }
+
+  const existing = localStorage.getItem('finn_auth_user');
+  if (existing) {
+    try {
+      state.currentUser = JSON.parse(existing);
+      authScreen.style.display = 'none';
+      mainTerminal.style.display = 'block';
+      updateUserUI();
+    } catch(e) {
+      authScreen.style.display = 'flex';
+      mainTerminal.style.display = 'none';
+    }
+  } else {
+    authScreen.style.display = 'flex';
+    mainTerminal.style.display = 'none';
+  }
+}
+
+function updateUserUI() {
+  if (!state.currentUser) return;
+  const initials = state.currentUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  const avatarEl = document.getElementById('user-avatar-initials');
+  const nameEl = document.getElementById('user-menu-name');
+  if (avatarEl) avatarEl.textContent = initials || 'SK';
+  if (nameEl) nameEl.textContent = state.currentUser.name;
+}
+
+// Primary Document Modal Viewer
+function initFilingModal() {
+  const modal = document.getElementById('filing-modal');
+  const closeBtn = document.getElementById('close-filing-modal');
+  if (closeBtn && modal) {
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+  }
+}
+
+function openFilingModal(itemJsonStr) {
+  const item = JSON.parse(decodeURIComponent(itemJsonStr));
+  const modal = document.getElementById('filing-modal');
+  document.getElementById('modal-exchange-ref').textContent = item.exchange_ref || 'NSE / BSE OFFICIAL DISCLOSURE';
+  document.getElementById('modal-company-title').textContent = `${item.company || item.ticker}`;
+  document.getElementById('modal-filing-title').textContent = item.title;
+  document.getElementById('modal-filing-text').textContent = item.raw_text || 'Full statutory disclosure filed under Regulation 30 of SEBI (LODR) Regulations.';
+  
+  const cleanSym = (item.symbol || item.ticker || '').replace('.NS', '').replace('.BO', '');
+  const portalUrl = `https://www.screener.in/company/${cleanSym}/consolidated/`;
+  document.getElementById('modal-portal-link').href = portalUrl;
+
+  modal.style.display = 'flex';
+}
 
 // Theme Management System
 function initThemes() {
@@ -55,7 +187,7 @@ function initThemes() {
       const theme = btn.getAttribute('data-theme');
       applyTheme(theme);
       if (modal) modal.style.display = 'none';
-      showToast(`Switched to ${theme.toUpperCase()} theme`);
+      showToast(`Theme: ${theme.toUpperCase()}`);
     });
   });
 }
@@ -65,21 +197,6 @@ function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   document.body.setAttribute('data-theme', theme);
   localStorage.setItem('finn_theme', theme);
-
-  const icons = {
-    midnight: '🌙',
-    light: '☀️',
-    bloomberg: '📟',
-    emerald: '🌲',
-    cyberpunk: '⚡',
-    matrix: '💻',
-    solarized: '🌊',
-    parchment: '📜',
-    dracula: '🧛'
-  };
-
-  const iconEl = document.getElementById('theme-icon');
-  if (iconEl) iconEl.textContent = icons[theme] || '🎨';
 
   document.querySelectorAll('.theme-opt-btn').forEach(btn => {
     if (btn.getAttribute('data-theme') === theme) {
@@ -119,7 +236,6 @@ function initAudioDispatch() {
   const banner = document.getElementById('audio-banner');
   const stopBtn = document.getElementById('stop-audio-btn');
 
-  // Set initial active speed button
   document.querySelectorAll('.audio-speed-btn').forEach(btn => {
     const spd = parseFloat(btn.getAttribute('data-speed'));
     if (spd === state.audioSpeed) {
@@ -133,7 +249,7 @@ function initAudioDispatch() {
       btn.classList.add('active');
       state.audioSpeed = parseFloat(btn.getAttribute('data-speed'));
       localStorage.setItem('finn_audio_speed', state.audioSpeed);
-      showToast(`Playback speed: ${state.audioSpeed}x`);
+      showToast(`Speed: ${state.audioSpeed}x`);
 
       if (state.isPlayingAudio && state.lastAudioScript) {
         playVoiceBriefing(state.lastAudioScript);
@@ -153,7 +269,7 @@ function initAudioDispatch() {
       state.lastAudioScript = data.script;
       playVoiceBriefing(data.script);
     } catch (e) {
-      showToast('Error playing audio brief');
+      showToast('Error loading audio brief');
     }
   });
 
@@ -162,7 +278,7 @@ function initAudioDispatch() {
 
 function playVoiceBriefing(text) {
   if (!('speechSynthesis' in window)) {
-    showToast('Speech synthesis not supported in this browser');
+    showToast('Speech synthesis not supported on this device');
     return;
   }
 
@@ -204,7 +320,7 @@ function initWhatsAppShare() {
       const res = await fetch('/api/whatsapp-memo');
       const data = await res.json();
       await navigator.clipboard.writeText(data.memo);
-      showToast('Copied WhatsApp Memo to Clipboard!');
+      showToast('Executive Brief Copied');
     } catch (e) {
       showToast('Failed to copy memo');
     }
@@ -215,7 +331,7 @@ function showToast(msg) {
   const toast = document.getElementById('toast-notify');
   toast.textContent = msg;
   toast.style.display = 'block';
-  setTimeout(() => { toast.style.display = 'none'; }, 2200);
+  setTimeout(() => { toast.style.display = 'none'; }, 2000);
 }
 
 // Interactive Financial Copilot
@@ -258,13 +374,12 @@ async function handleCopilotQuery(query) {
   const input = document.getElementById('copilot-input');
   input.value = '';
 
-  // Append user message
   history.innerHTML += `
-    <div style="background:#2563eb; color:#fff; padding:6px 10px; border-radius:8px 8px 0 8px; margin-bottom:6px; margin-left:20px; font-weight:600;">
+    <div style="background:var(--accent-blue); color:#fff; padding:6px 10px; border-radius:8px 8px 0 8px; margin-bottom:6px; margin-left:20px; font-weight:600;">
       ${query}
     </div>
-    <div id="copilot-loading" style="background:#1e293b; color:#94a3b8; padding:8px 10px; border-radius:8px; margin-bottom:6px; font-size:11px;">
-      Searching primary filings & concall transcripts...
+    <div id="copilot-loading" style="background:var(--bg-secondary); color:var(--text-muted); padding:8px 10px; border-radius:8px; margin-bottom:6px; font-size:11px;">
+      Auditing primary filings & transcripts...
     </div>
   `;
   history.scrollTop = history.scrollHeight;
@@ -281,10 +396,10 @@ async function handleCopilotQuery(query) {
     if (loadingEl) loadingEl.remove();
 
     history.innerHTML += `
-      <div style="background:#1e293b; border-left:3px solid #3b82f6; padding:8px 10px; border-radius:8px; margin-bottom:8px;">
-        <div style="color:#e2e8f0; margin-bottom:4px;">${data.grounded_response}</div>
-        <div style="font-size:9px; color:#38bdf8; font-family:monospace;">
-          ${data.citations.map(c => `📄 Citation: ${c}`).join('<br>')}
+      <div style="background:var(--bg-secondary); border-left:3px solid var(--accent-blue); padding:8px 10px; border-radius:8px; margin-bottom:8px;">
+        <div style="color:var(--text-primary); margin-bottom:4px;">${data.grounded_response}</div>
+        <div style="font-size:9px; color:var(--accent-blue); font-family:monospace;">
+          ${data.citations.map(c => `[Primary Citation]: ${c}`).join('<br>')}
         </div>
       </div>
     `;
@@ -292,7 +407,7 @@ async function handleCopilotQuery(query) {
   } catch (err) {
     const loadingEl = document.getElementById('copilot-loading');
     if (loadingEl) loadingEl.remove();
-    history.innerHTML += `<div style="color:#ef4444; font-size:11px; margin-bottom:6px;">Error: ${err.message}</div>`;
+    history.innerHTML += `<div style="color:var(--accent-red); font-size:11px; margin-bottom:6px;">Error: ${err.message}</div>`;
   }
 }
 
@@ -354,7 +469,7 @@ function initCategoryFilters() {
     state.showRoutine = !state.showRoutine;
     const container = document.getElementById('routine-feed-container');
     container.style.display = state.showRoutine ? 'block' : 'none';
-    toggleRoutineBtn.textContent = state.showRoutine ? '🔼 Hide Routine Paperwork' : '📁 Show Suppressed Routine Filings';
+    toggleRoutineBtn.textContent = state.showRoutine ? 'Collapse Routine Filings' : '📁 4 Suppressed Routine Filings';
   });
 }
 
@@ -363,14 +478,14 @@ async function loadDigest() {
   const container = document.getElementById('digest-feed-container');
   const routineContainer = document.getElementById('routine-feed-container');
 
-  container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b; font-size:12px;">Scanning portfolio filings...</div>';
+  container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:11px;">Scanning portfolio filings...</div>';
 
   try {
     const res = await fetch(`/api/digest?window=24&category=${state.activeCategory}&include_routine=false`);
     const data = await res.json();
 
     if (!data.feed || data.feed.length === 0) {
-      container.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b; font-size:12px;">No material announcements in this filter window.</div>';
+      container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:11px;">No material announcements in this filter window.</div>';
       return;
     }
 
@@ -378,17 +493,17 @@ async function loadDigest() {
     
     if (data.collapsed_routine && data.collapsed_routine.length > 0) {
       routineContainer.innerHTML = data.collapsed_routine.map(item => `
-        <div style="background:#131b2e; border:1px solid #24324f; border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:11px;">
-          <div style="display:flex; justify-content:space-between; color:#64748b; margin-bottom:2px;">
-            <span style="font-weight:700;">${item.ticker}</span>
-            <span style="font-size:8px;">ROUTINE FILING</span>
+        <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:6px; padding:8px 10px; margin-bottom:6px; font-size:10px;">
+          <div style="display:flex; justify-content:space-between; color:var(--text-muted); margin-bottom:2px;">
+            <span style="font-weight:700; color:var(--text-primary);">${item.ticker}</span>
+            <span style="font-size:8px; text-transform:uppercase;">Routine Filing</span>
           </div>
-          <div style="color:#94a3b8;">${item.title}</div>
+          <div style="color:var(--text-secondary);">${item.title}</div>
         </div>
       `).join('');
     }
   } catch (err) {
-    container.innerHTML = `<div style="color:#ef4444; font-size:12px; padding:20px;">Error loading digest: ${err.message}</div>`;
+    container.innerHTML = `<div style="color:var(--accent-red); font-size:11px; padding:20px;">Error loading digest: ${err.message}</div>`;
   }
 }
 
@@ -431,15 +546,17 @@ function renderAnnouncementCard(item) {
     execHtml = `
       <div class="executive-box">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div class="exec-name">👤 ${ex.person_name}</div>
-          <span style="font-size:9px; background:#f59e0b20; color:#fbbf24; padding:2px 6px; border-radius:4px; font-weight:700;">PROFILED</span>
+          <div class="exec-name">${ex.person_name}</div>
+          <span style="font-size:8px; background:rgba(245, 158, 11, 0.15); color:var(--accent-gold); padding:2px 5px; border-radius:3px; font-weight:700;">PROFILED</span>
         </div>
         <div class="exec-role">${ex.role}</div>
-        <div class="exec-detail"><strong>Prior:</strong> ${ex.previous_role}</div>
-        <div class="exec-detail" style="margin-top:2px;"><strong>Pedigree:</strong> ${ex.education}</div>
+        <div class="exec-detail"><strong>Prior Pedigree:</strong> ${ex.previous_role}</div>
+        <div class="exec-detail" style="margin-top:2px;"><strong>Education:</strong> ${ex.education}</div>
       </div>
     `;
   }
+
+  const encodedItem = encodeURIComponent(JSON.stringify(item));
 
   return `
     <article class="card">
@@ -455,16 +572,18 @@ function renderAnnouncementCard(item) {
 
       ${item.investor_takeaway ? `
         <div class="takeaway-box">
-          ⚡ <strong>Takeaway:</strong> ${item.investor_takeaway}
+          <strong>Key Takeaway:</strong> ${item.investor_takeaway}
         </div>
       ` : ''}
 
       ${metricsHtml}
       ${execHtml}
 
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:10px; color:#64748b;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:10px; color:var(--text-muted);">
         <span>${formatTime(item.timestamp)}</span>
-        ${item.pdf_url ? `<a href="${item.pdf_url}" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:600;">Original Filing ↗</a>` : ''}
+        <button onclick="openFilingModal('${encodedItem}')" style="background:none; border:none; color:var(--accent-blue); font-weight:700; cursor:pointer; font-size:10px;">
+          View Primary Filing ↗
+        </button>
       </div>
     </article>
   `;
@@ -473,35 +592,35 @@ function renderAnnouncementCard(item) {
 // 2. TRIGGERED ALERTS (with Sparklines)
 async function loadAlerts() {
   const container = document.getElementById('alerts-container');
-  container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b; font-size:12px;">Evaluating live alert triggers...</div>';
+  container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:11px;">Evaluating live alert triggers...</div>';
 
   try {
     const res = await fetch(`/api/alerts?price_thresh=${state.priceThreshold}&vol_thresh=${state.volThreshold}`);
     const data = await res.json();
 
     if (!data.alerts || data.alerts.length === 0) {
-      container.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b; font-size:12px;">No threshold breaches currently detected.</div>';
+      container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:11px;">No threshold breaches currently detected.</div>';
       return;
     }
 
     container.innerHTML = data.alerts.map(alert => `
-      <div class="card" style="border-left: 3px solid ${alert.severity === 'CRITICAL' ? '#ef4444' : '#f59e0b'};">
+      <div class="card" style="border-left: 3px solid ${alert.severity === 'CRITICAL' ? 'var(--accent-red)' : 'var(--accent-gold)'};">
         <div class="card-header">
           <div>
             <span class="badge-alert">${alert.category.replace('_', ' ').toUpperCase()}</span>
-            <div class="company-title" style="margin-top:4px;">${alert.company} (${alert.ticker})</div>
+            <div class="company-title" style="margin-top:3px;">${alert.company} (${alert.ticker})</div>
           </div>
           <div style="display:flex; align-items:center; gap:8px;">
             ${alert.price_history ? renderSparklineSVG(alert.price_history) : ''}
-            <span style="font-size:9px; font-family:monospace; color:#94a3b8;">${alert.severity}</span>
+            <span style="font-size:9px; font-family:monospace; color:var(--text-muted); font-weight:700;">${alert.severity}</span>
           </div>
         </div>
-        <div style="font-size:12px; font-weight:700; color:#fff; margin-bottom:3px;">${alert.headline}</div>
-        <div style="font-size:11px; color:#cbd5e1;">${alert.detail}</div>
+        <div style="font-size:12px; font-weight:700; color:var(--text-primary); margin-bottom:3px;">${alert.headline}</div>
+        <div style="font-size:11px; color:var(--text-secondary);">${alert.detail}</div>
       </div>
     `).join('');
   } catch (err) {
-    container.innerHTML = `<div style="color:#ef4444; font-size:12px; padding:20px;">Error loading alerts: ${err.message}</div>`;
+    container.innerHTML = `<div style="color:var(--accent-red); font-size:11px; padding:20px;">Error loading alerts: ${err.message}</div>`;
   }
 }
 
@@ -533,9 +652,9 @@ async function runResearch(ticker) {
   state.activeTicker = ticker;
   const container = document.getElementById('research-output-container');
   container.innerHTML = `
-    <div style="text-align:center; padding:30px; color:#64748b; font-size:12px;">
+    <div style="text-align:center; padding:30px; color:var(--text-muted); font-size:11px;">
       <div class="pulse-dot" style="margin: 0 auto 10px auto;"></div>
-      Auditing Primary Concall Transcripts & Annual Reports for <strong>${ticker}</strong>...
+      Auditing Primary Concall Transcripts & Reports for <strong>${ticker}</strong>...
     </div>
   `;
 
@@ -544,28 +663,39 @@ async function runResearch(ticker) {
     const data = await res.json();
     const r = data.research;
 
+    const cleanSym = (r.symbol || ticker).replace('.NS', '').replace('.BO', '');
+    const validAnnualReportUrl = `https://www.screener.in/company/${cleanSym}/consolidated/#documents`;
+    const validConcallUrl = `https://www.screener.in/company/${cleanSym}/consolidated/#concalls`;
+
     container.innerHTML = `
       <!-- Company Snapshot -->
       <div class="card" style="margin-top:8px;">
-        <div style="font-size:15px; font-weight:800; color:#fff;">${r.company_name}</div>
-        <div style="font-size:11px; color:#94a3b8; margin-bottom:6px;">${r.sector}</div>
-        <div style="font-size:11px; color:#cbd5e1; margin-bottom:6px;">${r.business_snapshot.summary}</div>
-        <div style="font-size:10px; color:#38bdf8;"><strong>Segments:</strong> ${r.business_snapshot.revenue_mix}</div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div style="font-size:15px; font-weight:800; color:var(--text-primary);">${r.company_name}</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-bottom:5px;">${r.sector}</div>
+          </div>
+          <a href="https://www.screener.in/company/${cleanSym}/consolidated/" target="_blank" style="font-size:10px; color:var(--accent-blue); text-decoration:none; font-weight:700;">
+            Screener Page ↗
+          </a>
+        </div>
+        <div style="font-size:11px; color:var(--text-secondary); margin-bottom:6px;">${r.business_snapshot.summary}</div>
+        <div style="font-size:10px; color:var(--accent-blue);"><strong>Revenue Segments:</strong> ${r.business_snapshot.revenue_mix}</div>
       </div>
 
       <!-- Credibility Score Gauge -->
       <div class="credibility-box">
         <div class="score-circle">${r.credibility_score.score}</div>
         <div>
-          <div style="font-size:12px; font-weight:800; color:#fef08a;">${r.credibility_score.rating}</div>
-          <div style="font-size:11px; color:#cbd5e1; line-height:1.35;">${r.credibility_score.commentary}</div>
+          <div style="font-size:12px; font-weight:800; color:var(--accent-gold);">${r.credibility_score.rating}</div>
+          <div style="font-size:11px; color:var(--text-secondary); line-height:1.35;">${r.credibility_score.commentary}</div>
         </div>
       </div>
 
       <!-- Narrative vs Numbers 4-Quarter Delivery Table -->
       <div class="research-section-title">
         <span>Narrative vs. Numbers</span>
-        <span style="font-size:9px; color:#94a3b8;">Last 4 Quarters</span>
+        <span style="font-size:9px; color:var(--text-muted);">4 Quarters Verified</span>
       </div>
 
       ${r.narrative_vs_numbers.map(item => `
@@ -574,35 +704,35 @@ async function runResearch(ticker) {
             <span class="quarter-label">${item.quarter}</span>
             <span class="verdict-badge verdict-${item.verdict.replace(' ', '_')}">${item.verdict}</span>
           </div>
-          <div class="guidance-text"><strong>Promised:</strong> ${item.management_guidance}</div>
-          <div class="actual-text"><strong>Delivered:</strong> ${item.actual_delivered}</div>
-          <div class="quote-source">Source: ${item.quote_source}</div>
+          <div class="guidance-text"><strong>Management Guidance:</strong> ${item.management_guidance}</div>
+          <div class="actual-text"><strong>Actual Audited Delivery:</strong> ${item.actual_delivered}</div>
+          <div class="quote-source">${item.quote_source}</div>
         </div>
       `).join('')}
 
       <!-- Cash Quality & Conversion -->
       <div class="research-section-title">
         <span>Cash Quality & Conversion</span>
-        <span style="font-size:9px; color:#10b981;">CFO/PAT: ${r.cash_quality.cfo_to_pat}</span>
+        <span style="font-size:9px; color:var(--accent-green);">CFO/PAT: ${r.cash_quality.cfo_to_pat}</span>
       </div>
       <div class="card">
-        <div style="font-size:11px; font-weight:700; color:#34d399; margin-bottom:3px;">${r.cash_quality.cash_conversion_verdict}</div>
-        <div style="font-size:11px; color:#cbd5e1;">Free Cash Flow: ${r.cash_quality.fcf_generated}</div>
+        <div style="font-size:11px; font-weight:700; color:var(--accent-green); margin-bottom:3px;">${r.cash_quality.cash_conversion_verdict}</div>
+        <div style="font-size:11px; color:var(--text-secondary);">Free Cash Flow: ${r.cash_quality.fcf_generated}</div>
       </div>
 
       <!-- Bull vs Bear Thesis -->
       <div class="research-section-title">
-        <span>Bull vs. Bear (Primary Grounded)</span>
+        <span>Grounded Bull vs. Bear Case</span>
       </div>
       <div class="thesis-grid">
         <div class="thesis-card bull-card">
-          <div style="font-weight:800; margin-bottom:3px; color:#34d399;">🐂 BULL CASE</div>
+          <div style="font-weight:800; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">BULL THESIS</div>
           <ul style="padding-left:12px; margin:0;">
             ${r.bull_vs_bear.bull_case.map(pt => `<li style="margin-bottom:3px;">${pt}</li>`).join('')}
           </ul>
         </div>
         <div class="thesis-card bear-card">
-          <div style="font-weight:800; margin-bottom:3px; color:#f87171;">🐻 BEAR CASE</div>
+          <div style="font-weight:800; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">BEAR RISKS</div>
           <ul style="padding-left:12px; margin:0;">
             ${r.bull_vs_bear.bear_case.map(pt => `<li style="margin-bottom:3px;">${pt}</li>`).join('')}
           </ul>
@@ -610,23 +740,23 @@ async function runResearch(ticker) {
       </div>
 
       <!-- Primary Sources Checked -->
-      <div style="margin-top:12px; padding:8px 10px; background:#111827; border-radius:8px; font-size:10px; color:#64748b;">
-        <strong style="color:#94a3b8;">Primary Source Links Verified:</strong>
-        <div style="margin-top:4px;">
-          <a href="${r.annual_report_url}" target="_blank" style="color:#38bdf8; text-decoration:none; margin-right:12px;">Audited Annual Reports ↗</a>
-          <a href="${r.concall_transcripts_url}" target="_blank" style="color:#38bdf8; text-decoration:none;">Concall Transcripts ↗</a>
+      <div style="margin-top:12px; padding:8px 10px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:6px; font-size:10px; color:var(--text-muted);">
+        <strong style="color:var(--text-primary);">Primary Sources Verified:</strong>
+        <div style="margin-top:5px; display:flex; gap:12px;">
+          <a href="${validAnnualReportUrl}" target="_blank" style="color:var(--accent-blue); text-decoration:none; font-weight:700;">Audited Reports ↗</a>
+          <a href="${validConcallUrl}" target="_blank" style="color:var(--accent-blue); text-decoration:none; font-weight:700;">Concall Transcripts ↗</a>
         </div>
       </div>
     `;
   } catch (err) {
-    container.innerHTML = `<div style="color:#ef4444; font-size:12px; padding:20px;">Error generating research: ${err.message}</div>`;
+    container.innerHTML = `<div style="color:var(--accent-red); font-size:11px; padding:20px;">Error generating research: ${err.message}</div>`;
   }
 }
 
 // 4. PORTFOLIO RADAR (with Mini Sparklines)
 async function loadPortfolio() {
   const container = document.getElementById('portfolio-container');
-  container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b; font-size:12px;">Fetching 20-day baseline metrics...</div>';
+  container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:11px;">Fetching 20-day baseline metrics...</div>';
 
   try {
     const res = await fetch(`/api/portfolio?price_thresh=${state.priceThreshold}&vol_thresh=${state.volThreshold}`);
@@ -639,8 +769,8 @@ async function loadPortfolio() {
       return `
         <div class="card" style="padding:9px 12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
           <div style="flex:1;">
-            <div style="font-size:13px; font-weight:700; color:#fff;">${stock.name}</div>
-            <div style="font-size:10px; color:#94a3b8; font-family:monospace;">${stock.ticker} · ${stock.sector}</div>
+            <div style="font-size:13px; font-weight:700; color:var(--text-primary);">${stock.name}</div>
+            <div style="font-size:10px; color:var(--text-muted); font-family:monospace;">${stock.ticker} · ${stock.sector}</div>
           </div>
           
           <div style="margin: 0 10px;">
@@ -648,18 +778,18 @@ async function loadPortfolio() {
           </div>
 
           <div style="text-align:right;">
-            <div style="font-size:13px; font-weight:700; font-family:monospace; color:${isUp ? '#10b981' : '#ef4444'};">
+            <div style="font-size:13px; font-weight:700; font-family:monospace; color:${isUp ? 'var(--accent-green)' : 'var(--accent-red)'};">
               ${isUp ? '+' : ''}${stock.pct_change}%
             </div>
-            <div style="font-size:10px; color:${isAnomalousVol ? '#f59e0b' : '#64748b'}; font-weight:${isAnomalousVol ? '700' : '400'};">
-              Vol: ${stock.volume_multiplier}x avg ${isAnomalousVol ? '⚡' : ''}
+            <div style="font-size:10px; color:${isAnomalousVol ? 'var(--accent-gold)' : 'var(--text-muted)'}; font-weight:${isAnomalousVol ? '700' : '400'};">
+              Vol: ${stock.volume_multiplier}x avg
             </div>
           </div>
         </div>
       `;
     }).join('');
   } catch (err) {
-    container.innerHTML = `<div style="color:#ef4444; font-size:12px; padding:20px;">Error loading portfolio: ${err.message}</div>`;
+    container.innerHTML = `<div style="color:var(--accent-red); font-size:11px; padding:20px;">Error loading portfolio: ${err.message}</div>`;
   }
 }
 
@@ -679,7 +809,7 @@ function renderSparklineSVG(points) {
   }).join(' ');
 
   const isUp = points[points.length - 1] >= points[0];
-  const color = isUp ? '#10b981' : '#ef4444';
+  const color = isUp ? 'var(--accent-green)' : 'var(--accent-red)';
 
   return `
     <svg class="sparkline-svg" viewBox="0 0 ${width} ${height}">
