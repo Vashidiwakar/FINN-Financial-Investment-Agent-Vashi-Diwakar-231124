@@ -21,7 +21,10 @@
           <div class="brand-sub">ENAM Intelligence Layer</div>
         </div>
       </div>
-      <div style="display: flex; gap: 8px; align-items: center;">
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <button id="theme-toggle-btn" class="theme-pill-btn" title="Toggle Theme (Midnight / Light / Bloomberg / Emerald)">
+          <span id="theme-icon">🌙</span>
+        </button>
         <button id="audio-dispatch-toggle" class="audio-pill-btn" title="Listen to 60-Second Morning Dispatch">
           <span class="audio-icon">▶</span>
           <span id="audio-label">Listen 60s</span>
@@ -73,6 +76,28 @@
           <button class="pill-btn thresh-v-btn active" data-val="1.8">1.8x</button>
           <button class="pill-btn thresh-v-btn" data-val="2.5">2.5x</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Theme Selection Modal -->
+    <div id="theme-modal" style="display: none; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; margin: 10px 14px; padding: 12px; z-index: 60;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--accent-gold);">🎨 Visual Interface Theme</span>
+        <button id="close-theme-btn" style="background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">✕</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button class="theme-opt-btn active" data-theme="midnight" style="display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #0a0e17; color: #f8fafc; border: 1px solid #24324f; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+          <span>🌙</span> Midnight (Dark)
+        </button>
+        <button class="theme-opt-btn" data-theme="light" style="display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+          <span>☀️</span> Nordic Light
+        </button>
+        <button class="theme-opt-btn" data-theme="bloomberg" style="display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #121212; color: #ffb703; border: 1px solid #3d3420; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+          <span>📟</span> Bloomberg Amber
+        </button>
+        <button class="theme-opt-btn" data-theme="emerald" style="display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #04140e; color: #86efac; border: 1px solid #1a563f; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+          <span>🌲</span> Emerald Quant
+        </button>
       </div>
     </div>
 

@@ -1,5 +1,5 @@
 /* Mobile-First Fintech Theme for FINN Agent */
-:root {
+:root, [data-theme="midnight"] {
   --bg-primary: #0a0e17;
   --bg-secondary: #131b2e;
   --bg-card: #182238;
@@ -13,10 +13,73 @@
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --border-color: #24324f;
+  --header-bg: rgba(10, 14, 23, 0.94);
+  --bottom-nav-bg: rgba(10, 14, 23, 0.95);
+  --box-shadow: rgba(0, 0, 0, 0.6);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Light / Research Theme */
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --accent-gold: #d97706;
+  --accent-blue: #2563eb;
+  --accent-green: #059669;
+  --accent-red: #dc2626;
+  --accent-purple: #7c3aed;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --header-bg: rgba(248, 250, 252, 0.94);
+  --bottom-nav-bg: rgba(255, 255, 255, 0.95);
+  --box-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Bloomberg Amber Terminal Theme */
+[data-theme="bloomberg"] {
+  --bg-primary: #111111;
+  --bg-secondary: #1a1a1a;
+  --bg-card: #222222;
+  --bg-card-hover: #2c2c2c;
+  --accent-gold: #ffb703;
+  --accent-blue: #fb8500;
+  --accent-green: #52b788;
+  --accent-red: #e63946;
+  --accent-purple: #f4a261;
+  --text-primary: #ffb703;
+  --text-secondary: #f3c053;
+  --text-muted: #a3752c;
+  --border-color: #38301b;
+  --header-bg: rgba(17, 17, 17, 0.95);
+  --bottom-nav-bg: rgba(17, 17, 17, 0.96);
+  --box-shadow: rgba(0, 0, 0, 0.8);
+}
+
+/* Emerald Quant Theme */
+[data-theme="emerald"] {
+  --bg-primary: #04140e;
+  --bg-secondary: #09271c;
+  --bg-card: #0e3b2b;
+  --bg-card-hover: #144f3a;
+  --accent-gold: #facc15;
+  --accent-blue: #38bdf8;
+  --accent-green: #10b981;
+  --accent-red: #f87171;
+  --accent-purple: #c084fc;
+  --text-primary: #e6f9f0;
+  --text-secondary: #86efac;
+  --text-muted: #4ade80;
+  --border-color: #1a563f;
+  --header-bg: rgba(4, 20, 14, 0.94);
+  --bottom-nav-bg: rgba(4, 20, 14, 0.96);
+  --box-shadow: rgba(0, 0, 0, 0.7);
 }
 
 * {
@@ -34,6 +97,7 @@ body {
   display: flex;
   justify-content: center;
   min-height: 100vh;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 #mobile-container {
@@ -44,17 +108,18 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.6);
-  border-left: 1px solid rgba(255, 255, 255, 0.05);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 50px var(--box-shadow);
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
   padding-bottom: 75px;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 /* Header */
 .app-header {
   position: sticky;
   top: 0;
-  background: rgba(10, 14, 23, 0.94);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   z-index: 50;
   padding: 10px 14px;
@@ -71,7 +136,7 @@ body {
 }
 
 .brand-logo {
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-red));
   color: #fff;
   font-weight: 900;
   font-size: 13px;
@@ -84,6 +149,7 @@ body {
   font-weight: 700;
   font-size: 15px;
   letter-spacing: -0.3px;
+  color: var(--text-primary);
 }
 
 .brand-sub {
@@ -94,13 +160,33 @@ body {
   letter-spacing: 0.8px;
 }
 
+.theme-pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  padding: 5px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-pill-btn:hover {
+  border-color: var(--accent-blue);
+  color: var(--text-primary);
+}
+
 .audio-pill-btn {
   display: flex;
   align-items: center;
   gap: 5px;
   font-size: 11px;
   font-weight: 700;
-  color: #f59e0b;
+  color: var(--accent-gold);
   background: rgba(245, 158, 11, 0.12);
   padding: 5px 9px;
   border-radius: 20px;
@@ -123,7 +209,7 @@ body {
 
 .sound-wave .bar {
   width: 3px;
-  background: #f59e0b;
+  background: var(--accent-gold);
   border-radius: 2px;
   animation: wave 1s infinite ease-in-out;
 }
@@ -212,6 +298,7 @@ body {
   border-radius: var(--radius-md);
   padding: 12px 14px;
   margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: transform 0.15s ease, background 0.15s ease;
 }
 
@@ -229,7 +316,7 @@ body {
 .company-title {
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .ticker-tag {
@@ -247,18 +334,18 @@ body {
   letter-spacing: 0.5px;
 }
 
-.cat-results { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
-.cat-management_change { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
-.cat-mna { background: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.4); }
-.cat-capex { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
-.cat-litigation { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
-.cat-routine { background: rgba(100, 116, 139, 0.2); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.4); }
+.cat-results { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.35); }
+.cat-management_change { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border: 1px solid rgba(245, 158, 11, 0.35); }
+.cat-mna { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.35); }
+.cat-capex { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.35); }
+.cat-litigation { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); }
+.cat-routine { background: rgba(100, 116, 139, 0.15); color: var(--text-muted); border: 1px solid rgba(100, 116, 139, 0.35); }
 
 .card-title {
   font-size: 12px;
   font-weight: 600;
   margin-bottom: 6px;
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 .card-summary {
@@ -269,13 +356,13 @@ body {
 }
 
 .takeaway-box {
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--bg-secondary);
   border-left: 3px solid var(--accent-gold);
   padding: 7px 9px;
   border-radius: 4px;
   font-size: 11px;
   font-weight: 500;
-  color: #fef08a;
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
@@ -306,7 +393,7 @@ body {
 .metric-value {
   font-size: 11px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary);
   font-family: var(--font-mono);
   margin: 1px 0;
 }
@@ -322,7 +409,7 @@ body {
 /* Executive Bio Box */
 .executive-box {
   background: rgba(245, 158, 11, 0.08);
-  border: 1px dashed rgba(245, 158, 11, 0.3);
+  border: 1px dashed rgba(245, 158, 11, 0.35);
   padding: 8px 10px;
   border-radius: var(--radius-sm);
   margin: 6px 0;
@@ -331,7 +418,7 @@ body {
 .exec-name {
   font-size: 11px;
   font-weight: 700;
-  color: #fde68a;
+  color: var(--accent-gold);
 }
 
 .exec-role {
@@ -357,7 +444,7 @@ body {
   flex: 1;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  color: #fff;
+  color: var(--text-primary);
   padding: 9px 12px;
   border-radius: var(--radius-sm);
   font-size: 13px;
@@ -402,9 +489,9 @@ body {
 }
 
 .chip-ticker.active {
-  background: rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.18);
   border-color: var(--accent-blue);
-  color: #fff;
+  color: var(--accent-blue);
 }
 
 /* Narrative vs Numbers Table */
@@ -438,7 +525,7 @@ body {
 .quarter-label {
   font-size: 10px;
   font-weight: 700;
-  color: #93c5fd;
+  color: var(--accent-blue);
   font-family: var(--font-mono);
 }
 
@@ -449,20 +536,20 @@ body {
   border-radius: 4px;
 }
 
-.verdict-BEAT { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-.verdict-DELIVERED { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-.verdict-PARTIAL_MISS { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-.verdict-ON_TRACK { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+.verdict-BEAT { background: rgba(16, 185, 129, 0.18); color: var(--accent-green); }
+.verdict-DELIVERED { background: rgba(59, 130, 246, 0.18); color: var(--accent-blue); }
+.verdict-PARTIAL_MISS { background: rgba(239, 68, 68, 0.18); color: var(--accent-red); }
+.verdict-ON_TRACK { background: rgba(245, 158, 11, 0.18); color: var(--accent-gold); }
 
 .guidance-text {
   font-size: 11px;
-  color: #cbd5e1;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .actual-text {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   border-left: 2px solid var(--accent-blue);
   padding-left: 6px;
   margin-bottom: 4px;
@@ -476,8 +563,8 @@ body {
 
 /* Credibility Meter */
 .credibility-box {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(59, 130, 246, 0.05));
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   padding: 10px 12px;
   border-radius: var(--radius-sm);
   display: flex;
@@ -496,7 +583,7 @@ body {
   justify-content: center;
   font-size: 16px;
   font-weight: 900;
-  color: #fff;
+  color: var(--accent-gold);
   flex-shrink: 0;
 }
 
@@ -517,13 +604,13 @@ body {
 .bull-card {
   background: rgba(16, 185, 129, 0.08);
   border: 1px solid rgba(16, 185, 129, 0.25);
-  color: #a7f3d0;
+  color: var(--accent-green);
 }
 
 .bear-card {
   background: rgba(239, 68, 68, 0.08);
   border: 1px solid rgba(239, 68, 68, 0.25);
-  color: #fecaca;
+  color: var(--accent-red);
 }
 
 /* Floating Copilot Button */
@@ -531,7 +618,7 @@ body {
   position: fixed;
   bottom: 80px;
   right: 18px;
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  background: linear-gradient(135deg, var(--accent-blue), #6366f1);
   color: #fff;
   padding: 8px 14px;
   border-radius: 24px;
@@ -549,9 +636,9 @@ body {
 }
 
 .copilot-pill {
-  background: #1e293b;
-  color: #94a3b8;
-  border: 1px solid #334155;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 3px 8px;
   font-size: 10px;
@@ -560,8 +647,8 @@ body {
 }
 
 .copilot-pill:hover {
-  background: #334155;
-  color: #fff;
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
 }
 
 /* Sparklines */
@@ -577,7 +664,7 @@ body {
   bottom: 0;
   width: 100%;
   max-width: 480px;
-  background: rgba(10, 14, 23, 0.95);
+  background: var(--bottom-nav-bg);
   backdrop-filter: blur(12px);
   border-top: 1px solid var(--border-color);
   display: flex;
@@ -610,11 +697,11 @@ body {
 
 /* Anomaly Tag */
 .badge-alert {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
+  background: rgba(239, 68, 68, 0.18);
+  color: var(--accent-red);
   font-size: 9px;
   font-weight: 700;
   padding: 2px 5px;
   border-radius: 4px;
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  border: 1px solid rgba(239, 68, 68, 0.35);
 }

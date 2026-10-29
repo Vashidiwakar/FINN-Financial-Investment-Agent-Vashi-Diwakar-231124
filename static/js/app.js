@@ -1,4 +1,4 @@
-// FINN - Financial Investment Agent Mobile Client (v1.1.0)
+// FINN - Financial Investment Agent Mobile Client (v1.2.0)
 let state = {
   priceThreshold: 3.0,
   volThreshold: 1.8,
@@ -6,10 +6,12 @@ let state = {
   activeTicker: 'TATAMOTORS.NS',
   showRoutine: false,
   isPlayingAudio: false,
-  speechSynthUtterance: null
+  speechSynthUtterance: null,
+  currentTheme: 'midnight'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  initThemes();
   initNav();
   initThresholds();
   initCategoryFilters();
@@ -24,6 +26,64 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPortfolio();
   runResearch(state.activeTicker);
 });
+
+// Theme Management System
+function initThemes() {
+  const savedTheme = localStorage.getItem('finn_theme') || 'midnight';
+  applyTheme(savedTheme);
+
+  const toggleBtn = document.getElementById('theme-toggle-btn');
+  const modal = document.getElementById('theme-modal');
+  const closeBtn = document.getElementById('close-theme-btn');
+
+  if (toggleBtn && modal) {
+    toggleBtn.addEventListener('click', () => {
+      modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+
+  if (closeBtn && modal) {
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+  }
+
+  document.querySelectorAll('.theme-opt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const theme = btn.getAttribute('data-theme');
+      applyTheme(theme);
+      if (modal) modal.style.display = 'none';
+      showToast(`Switched to ${theme.toUpperCase()} theme`);
+    });
+  });
+}
+
+function applyTheme(theme) {
+  state.currentTheme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  document.body.setAttribute('data-theme', theme);
+  localStorage.setItem('finn_theme', theme);
+
+  const icons = {
+    midnight: '🌙',
+    light: '☀️',
+    bloomberg: '📟',
+    emerald: '🌲'
+  };
+
+  const iconEl = document.getElementById('theme-icon');
+  if (iconEl) iconEl.textContent = icons[theme] || '🎨';
+
+  document.querySelectorAll('.theme-opt-btn').forEach(btn => {
+    if (btn.getAttribute('data-theme') === theme) {
+      btn.style.borderColor = 'var(--accent-blue)';
+      btn.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.3)';
+    } else {
+      btn.style.borderColor = 'var(--border-color)';
+      btn.style.boxShadow = 'none';
+    }
+  });
+}
 
 // Navigation Handling
 function initNav() {
