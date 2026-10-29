@@ -44,6 +44,21 @@ function initAuth() {
   const userBtn = document.getElementById('user-profile-btn');
   const userMenu = document.getElementById('user-menu-modal');
   const signoutBtn = document.getElementById('signout-btn');
+  const togglePwdBtn = document.getElementById('toggle-pwd-btn');
+  const pwdInput = document.getElementById('auth-password');
+  const pwdIcon = document.getElementById('pwd-eye-icon');
+
+  if (togglePwdBtn && pwdInput) {
+    togglePwdBtn.addEventListener('click', () => {
+      const isPwd = pwdInput.type === 'password';
+      pwdInput.type = isPwd ? 'text' : 'password';
+      if (isPwd) {
+        pwdIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+      } else {
+        pwdIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+      }
+    });
+  }
 
   tabLogin.addEventListener('click', () => {
     tabLogin.classList.add('active');
@@ -68,7 +83,7 @@ function initAuth() {
   });
 
   function loginUser(name, email) {
-    const user = { name: name || 'Sachin Kumar', email: email || 'analyst@enam.com' };
+    const user = { name: name || 'Vashi Diwakar', email: email || 'vashi@iitk.ac.in', role: 'IIT Kanpur • 4th Year EE' };
     localStorage.setItem('finn_auth_user', JSON.stringify(user));
     state.currentUser = user;
     authScreen.style.display = 'none';
@@ -78,7 +93,7 @@ function initAuth() {
   }
 
   demoBtn.addEventListener('click', () => {
-    loginUser('Sachin Kumar', 'analyst@enam.com');
+    loginUser('Vashi Diwakar', 'vashi@iitk.ac.in');
   });
 
   submitBtn.addEventListener('click', () => {
@@ -131,8 +146,10 @@ function updateUserUI() {
   const initials = state.currentUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
   const avatarEl = document.getElementById('user-avatar-initials');
   const nameEl = document.getElementById('user-menu-name');
-  if (avatarEl) avatarEl.textContent = initials || 'SK';
+  const roleEl = document.getElementById('user-menu-role');
+  if (avatarEl) avatarEl.textContent = initials || 'VD';
   if (nameEl) nameEl.textContent = state.currentUser.name;
+  if (roleEl) roleEl.textContent = state.currentUser.role || 'IIT Kanpur • 4th Year EE';
 }
 
 // Primary Document Modal Viewer
@@ -200,11 +217,9 @@ function applyTheme(theme) {
 
   document.querySelectorAll('.theme-opt-btn').forEach(btn => {
     if (btn.getAttribute('data-theme') === theme) {
-      btn.style.borderColor = 'var(--accent-blue)';
-      btn.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.3)';
+      btn.classList.add('active');
     } else {
-      btn.style.borderColor = 'var(--border-color)';
-      btn.style.boxShadow = 'none';
+      btn.classList.remove('active');
     }
   });
 }

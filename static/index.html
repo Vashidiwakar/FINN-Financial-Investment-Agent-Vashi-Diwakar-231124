@@ -33,17 +33,22 @@
         <form id="auth-form" onsubmit="return false;">
           <div id="signup-name-wrap" style="display: none; margin-bottom: 12px;">
             <label style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Full Name</label>
-            <input type="text" id="auth-name" class="ticker-input" placeholder="e.g. Sachin Kumar" style="width: 100%; margin-top: 4px;">
+            <input type="text" id="auth-name" class="ticker-input" placeholder="e.g. Vashi Diwakar" style="width: 100%; margin-top: 4px;">
           </div>
 
           <div style="margin-bottom: 12px;">
             <label style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Work Email</label>
-            <input type="email" id="auth-email" class="ticker-input" placeholder="analyst@enam.com" value="analyst@enam.com" style="width: 100%; margin-top: 4px;">
+            <input type="email" id="auth-email" class="ticker-input" placeholder="vashi@iitk.ac.in" value="vashi@iitk.ac.in" style="width: 100%; margin-top: 4px;">
           </div>
 
           <div style="margin-bottom: 18px;">
             <label style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Password</label>
-            <input type="password" id="auth-password" class="ticker-input" placeholder="••••••••" value="password123" style="width: 100%; margin-top: 4px;">
+            <div style="position: relative; margin-top: 4px;">
+              <input type="password" id="auth-password" class="ticker-input" placeholder="••••••••" value="password123" style="width: 100%; padding-right: 38px;">
+              <button type="button" id="toggle-pwd-btn" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center;" title="Show/Hide Password">
+                <svg id="pwd-eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </button>
+            </div>
           </div>
 
           <button id="auth-submit-btn" class="btn-primary" style="width: 100%; padding: 11px; font-size: 13px; font-weight: 700; border-radius: 8px;">
@@ -57,7 +62,7 @@
 
         <button id="demo-login-btn" style="width: 100%; background: var(--bg-secondary); border: 1px dashed var(--accent-gold); color: var(--accent-gold); font-size: 12px; font-weight: 700; padding: 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-          One-Click Demo Sign In (ENAM Analyst)
+          One-Click Sign In (Vashi Diwakar • IIT Kanpur)
         </button>
       </div>
 
@@ -99,7 +104,7 @@
           <!-- User Sign Out Badge -->
           <button id="user-profile-btn" style="background: none; border: none; cursor: pointer; padding: 2px;" title="User Menu / Sign Out">
             <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: var(--accent-blue);" id="user-avatar-initials">
-              SK
+              VD
             </div>
           </button>
         </div>
@@ -136,9 +141,9 @@
       </div>
 
       <!-- User Account Dropdown Modal -->
-      <div id="user-menu-modal" style="display: none; position: absolute; top: 54px; right: 14px; width: 200px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; z-index: 150; box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
-        <div style="font-size: 12px; font-weight: 700; color: var(--text-primary);" id="user-menu-name">Sachin Kumar</div>
-        <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 8px;" id="user-menu-role">Institutional Equity Analyst</div>
+      <div id="user-menu-modal" style="display: none; position: absolute; top: 54px; right: 14px; width: 220px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; z-index: 150; box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+        <div style="font-size: 12px; font-weight: 700; color: var(--text-primary);" id="user-menu-name">Vashi Diwakar</div>
+        <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 8px;" id="user-menu-role">IIT Kanpur • 4th Year EE</div>
         <div style="border-top: 1px solid var(--border-color); padding-top: 8px;">
           <button id="signout-btn" style="width: 100%; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--accent-red); padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
             Sign Out
@@ -170,22 +175,23 @@
         </div>
       </div>
 
-      <!-- Theme Selection Modal (9 Professional Themes) -->
+      <!-- Theme Selection Modal -->
       <div id="theme-modal" style="display: none; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; margin: 10px 14px; padding: 12px; z-index: 60;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 12px; font-weight: 700; color: var(--accent-gold);">Visual Palette (9 Themes)</span>
+          <span style="font-size: 12px; font-weight: 700; color: var(--accent-gold);">Visual Palette</span>
           <button id="close-theme-btn" style="background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">✕</button>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-          <button class="theme-opt-btn active" data-theme="midnight">Midnight (Default)</button>
-          <button class="theme-opt-btn" data-theme="light">Nordic Light</button>
-          <button class="theme-opt-btn" data-theme="bloomberg">Bloomberg Amber</button>
-          <button class="theme-opt-btn" data-theme="emerald">Emerald Quant</button>
-          <button class="theme-opt-btn" data-theme="cyberpunk">Cyberpunk Neon</button>
-          <button class="theme-opt-btn" data-theme="matrix">Hacker Matrix</button>
-          <button class="theme-opt-btn" data-theme="solarized">Solarized Dark</button>
-          <button class="theme-opt-btn" data-theme="parchment">FT / WSJ Paper</button>
-          <button class="theme-opt-btn" data-theme="dracula" style="grid-column: span 2;">Dracula Pro</button>
+          <button class="theme-opt-btn active" data-theme="midnight" style="background: #0a0e17; color: #f8fafc; border: 1px solid #24324f;">Midnight</button>
+          <button class="theme-opt-btn" data-theme="light" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1;">Nordic Light</button>
+          <button class="theme-opt-btn" data-theme="bloomberg" style="background: #111111; color: #ffb703; border: 1px solid #ffb703;">Bloomberg Amber</button>
+          <button class="theme-opt-btn" data-theme="emerald" style="background: #04140e; color: #10b981; border: 1px solid #1a563f;">Emerald Quant</button>
+          <button class="theme-opt-btn" data-theme="cyberpunk" style="background: #0b021d; color: #00f0ff; border: 1px solid #b026ff;">Cyberpunk Neon</button>
+          <button class="theme-opt-btn" data-theme="matrix" style="background: #000000; color: #00ff66; border: 1px solid #00ff66;">Hacker Matrix</button>
+          <button class="theme-opt-btn" data-theme="solarized" style="background: #002b36; color: #2aa198; border: 1px solid #268bd2;">Solarized Dark</button>
+          <button class="theme-opt-btn" data-theme="parchment" style="background: #fbf0d9; color: #2b2014; border: 1px solid #b0570b;">FT Paper</button>
+          <button class="theme-opt-btn" data-theme="dracula" style="background: #21222c; color: #bd93f9; border: 1px solid #bd93f9;">Dracula Pro</button>
+          <button class="theme-opt-btn" data-theme="oceanic" style="background: #0b132b; color: #48cae4; border: 1px solid #48cae4;">Oceanic Navy</button>
         </div>
       </div>
 

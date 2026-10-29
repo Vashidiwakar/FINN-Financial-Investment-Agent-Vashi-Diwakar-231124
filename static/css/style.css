@@ -182,6 +182,26 @@
   --box-shadow: rgba(0, 0, 0, 0.6);
 }
 
+/* Oceanic Navy Theme */
+[data-theme="oceanic"] {
+  --bg-primary: #0b132b;
+  --bg-secondary: #1c2541;
+  --bg-card: #243356;
+  --bg-card-hover: #32436d;
+  --accent-gold: #f4d06f;
+  --accent-blue: #48cae4;
+  --accent-green: #06d6a0;
+  --accent-red: #ef476f;
+  --accent-purple: #9d4edd;
+  --text-primary: #f0f8ff;
+  --text-secondary: #a0c4e2;
+  --text-muted: #6482a0;
+  --border-color: #2e446d;
+  --header-bg: rgba(11, 19, 43, 0.95);
+  --bottom-nav-bg: rgba(11, 19, 43, 0.97);
+  --box-shadow: rgba(72, 202, 228, 0.15);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -278,6 +298,25 @@ body {
 .theme-pill-btn:hover {
   border-color: var(--accent-blue);
   color: var(--text-primary);
+}
+
+.theme-opt-btn {
+  border-radius: 6px;
+  padding: 8px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  letter-spacing: -0.2px;
+}
+
+.theme-opt-btn:hover {
+  transform: translateY(-1px);
+}
+
+.theme-opt-btn.active {
+  box-shadow: 0 0 0 2px var(--accent-gold), 0 4px 12px rgba(0,0,0,0.3) !important;
 }
 
 .audio-pill-btn {

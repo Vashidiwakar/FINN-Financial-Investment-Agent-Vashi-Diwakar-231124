@@ -2,7 +2,8 @@
 
 **To:** assessment@enam.com  
 **Subject:** ENAM - IIT screening - 2027  
-**Candidate Name:** Sachin Kumar  
+**Candidate Name:** Vashi Diwakar  
+**Academic Background:** 4th Year Undergraduate, Electrical Engineering, IIT Kanpur  
 **Date:** October 2026  
 **Repository:** [GitHub Repository Link - Insert Your Repo URL]  
 **Live Working Prototype:** [Deployed URL / Local Instructions - e.g., Render/Railway/Local]
