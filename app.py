@@ -225,19 +225,19 @@ def get_whatsapp_memo():
     commonly shared across Dalal Street investment committees.
     """
     text = (
-        "📊 *FINN MORNING WIRE | ENAM PORTFOLIO UPDATE*\n"
-        "📅 _October 2026 - Pre-Market Opening Brief_\n\n"
-        "⚡ *TOP HIGH-CONVICTION SIGNALS:*\n"
-        "1️⃣ *TATAMOTORS* (Q2 Results): PAT +42% YoY (₹5,230 Cr). JLR EBIT margin 8.9% (+40 bps vs guided). Net auto debt-free status confirmed.\n"
-        "2️⃣ *TCS* (Management Change): Dr. Harrick Vin steps down. New CTO: *Amit Srivastava* (ex-Google Cloud APAC AI Head, IIT Bombay/Stanford).\n"
-        "3️⃣ *DIXON* (M&A): Acquired 50.1% in Ismartu India for ₹2,384 Cr (Transsion handset consolidation).\n"
-        "4️⃣ *RELIANCE* (Capex): ₹12,500 Cr Phase-2 green hydrogen electrolyzer gigafactory capex approved.\n\n"
-        "🚨 *VOLUME & PRICE ANOMALIES (20-Day Baseline):*\n"
+        "*FINN MORNING WIRE | ENAM PORTFOLIO UPDATE*\n"
+        "_October 2026 - Pre-Market Opening Brief_\n\n"
+        "*TOP HIGH-CONVICTION SIGNALS:*\n"
+        "1. *TATAMOTORS* (Q2 Results): PAT +42% YoY (₹5,230 Cr). JLR EBIT margin 8.9% (+40 bps vs guided). Net auto debt-free status confirmed.\n"
+        "2. *TCS* (Management Change): Dr. Harrick Vin steps down. New CTO: *Amit Srivastava* (ex-Google Cloud APAC AI Head, IIT Bombay/Stanford).\n"
+        "3. *DIXON* (M&A): Acquired 50.1% in Ismartu India for ₹2,384 Cr (Transsion handset consolidation).\n"
+        "4. *RELIANCE* (Capex): ₹12,500 Cr Phase-2 green hydrogen electrolyzer gigafactory capex approved.\n\n"
+        "*VOLUME & PRICE ANOMALIES (20-Day Baseline):*\n"
         "• *TRENT*: +4.5% | Vol 2.5x Avg (Zudio footprint expansion)\n"
         "• *DIXON*: +5.1% | Vol 2.3x Avg (M&A announcement)\n"
         "• *INFY*: -3.2% price drop | Normal volume\n\n"
-        "📁 _4 routine ESOP/compliance filings filtered out._\n"
-        "🔗 _Full primary concall audit available on FINN Mobile Agent._"
+        "[4 routine ESOP/compliance filings filtered out]\n"
+        "[Full primary concall audit available on FINN Mobile Agent]"
     )
     return {"memo": text}
 

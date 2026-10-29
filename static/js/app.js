@@ -47,6 +47,50 @@ function initAuth() {
   const togglePwdBtn = document.getElementById('toggle-pwd-btn');
   const pwdInput = document.getElementById('auth-password');
   const pwdIcon = document.getElementById('pwd-eye-icon');
+  const emailInput = document.getElementById('auth-email');
+  const nameInput = document.getElementById('auth-name');
+  const errorEl = document.getElementById('auth-error-msg');
+
+  let authMode = 'login'; // 'login' or 'signup'
+
+  // Seed default registered accounts if not present
+  if (!localStorage.getItem('finn_accounts')) {
+    const defaultAccounts = [
+      { name: 'Vashi Diwakar', email: 'example@example.com', password: 'password123', role: 'IIT Kanpur' }
+    ];
+    localStorage.setItem('finn_accounts', JSON.stringify(defaultAccounts));
+  }
+
+  function getAccounts() {
+    try {
+      return JSON.parse(localStorage.getItem('finn_accounts')) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveAccounts(accounts) {
+    localStorage.setItem('finn_accounts', JSON.stringify(accounts));
+  }
+
+  function showError(msg) {
+    if (errorEl) {
+      errorEl.textContent = msg;
+      errorEl.style.display = 'block';
+    }
+    showToast(msg);
+  }
+
+  function clearError() {
+    if (errorEl) {
+      errorEl.textContent = '';
+      errorEl.style.display = 'none';
+    }
+  }
+
+  [emailInput, pwdInput, nameInput].forEach(inp => {
+    if (inp) inp.addEventListener('input', clearError);
+  });
 
   if (togglePwdBtn && pwdInput) {
     togglePwdBtn.addEventListener('click', () => {
@@ -61,6 +105,8 @@ function initAuth() {
   }
 
   tabLogin.addEventListener('click', () => {
+    authMode = 'login';
+    clearError();
     tabLogin.classList.add('active');
     tabLogin.style.background = 'var(--accent-blue)';
     tabLogin.style.color = '#fff';
@@ -72,6 +118,8 @@ function initAuth() {
   });
 
   tabSignup.addEventListener('click', () => {
+    authMode = 'signup';
+    clearError();
     tabSignup.classList.add('active');
     tabSignup.style.background = 'var(--accent-blue)';
     tabSignup.style.color = '#fff';
@@ -82,10 +130,15 @@ function initAuth() {
     submitBtn.textContent = 'Create Analyst Account';
   });
 
-  function loginUser(name, email) {
-    const user = { name: name || 'Vashi Diwakar', email: email || 'example@example.com', role: 'IIT Kanpur' };
-    localStorage.setItem('finn_auth_user', JSON.stringify(user));
-    state.currentUser = user;
+  function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).trim());
+  }
+
+  function loginSuccess(user) {
+    const session = { name: user.name, email: user.email, role: user.role || 'IIT Kanpur' };
+    localStorage.setItem('finn_auth_user', JSON.stringify(session));
+    state.currentUser = session;
     authScreen.style.display = 'none';
     mainTerminal.style.display = 'block';
     updateUserUI();
@@ -93,13 +146,85 @@ function initAuth() {
   }
 
   demoBtn.addEventListener('click', () => {
-    loginUser('Vashi Diwakar', 'example@example.com');
+    if (emailInput) emailInput.value = 'example@example.com';
+    if (pwdInput) pwdInput.value = 'password123';
+    clearError();
+    const accounts = getAccounts();
+    let user = accounts.find(a => a.email.toLowerCase() === 'example@example.com');
+    if (!user) {
+      user = { name: 'Vashi Diwakar', email: 'example@example.com', password: 'password123', role: 'IIT Kanpur' };
+      accounts.push(user);
+      saveAccounts(accounts);
+    }
+    loginSuccess(user);
   });
 
   submitBtn.addEventListener('click', () => {
-    const email = document.getElementById('auth-email').value;
-    const name = document.getElementById('auth-name').value;
-    loginUser(name, email);
+    const email = (emailInput ? emailInput.value || '' : '').trim();
+    const password = (pwdInput ? pwdInput.value || '' : '').trim();
+    const name = (nameInput ? nameInput.value || '' : '').trim();
+
+    // 1. Rigorous Email Validation
+    if (!email) {
+      showError('Please enter an email address.');
+      if (emailInput) emailInput.focus();
+      return;
+    }
+    if (!isValidEmail(email)) {
+      showError('Invalid email format. Enter a valid email like example@example.com');
+      if (emailInput) emailInput.focus();
+      return;
+    }
+
+    // 2. Password Validation
+    if (!password) {
+      showError('Please enter your password.');
+      if (pwdInput) pwdInput.focus();
+      return;
+    }
+    if (password.length < 6) {
+      showError('Password must be at least 6 characters long.');
+      if (pwdInput) pwdInput.focus();
+      return;
+    }
+
+    const accounts = getAccounts();
+
+    if (authMode === 'login') {
+      const user = accounts.find(a => a.email.toLowerCase() === email.toLowerCase());
+      if (!user) {
+        showError('No account found for ' + email + '. Switch to "Create Account" to sign up.');
+        return;
+      }
+      if (user.password !== password) {
+        showError('Incorrect password for ' + email + '. Please verify and try again.');
+        return;
+      }
+      clearError();
+      loginSuccess(user);
+    } else {
+      // Sign Up Mode
+      if (!name || name.length < 2) {
+        showError('Please enter your full name (minimum 2 letters).');
+        if (nameInput) nameInput.focus();
+        return;
+      }
+      const existing = accounts.find(a => a.email.toLowerCase() === email.toLowerCase());
+      if (existing) {
+        showError('An account with ' + email + ' already exists. Please switch to "Sign In".');
+        return;
+      }
+      const newUser = {
+        name: name,
+        email: email,
+        password: password,
+        role: 'IIT Kanpur'
+      };
+      accounts.push(newUser);
+      saveAccounts(accounts);
+      clearError();
+      loginSuccess(newUser);
+    }
   });
 
   if (userBtn) {
@@ -127,10 +252,17 @@ function initAuth() {
   const existing = localStorage.getItem('finn_auth_user');
   if (existing) {
     try {
-      state.currentUser = JSON.parse(existing);
-      authScreen.style.display = 'none';
-      mainTerminal.style.display = 'block';
-      updateUserUI();
+      const parsed = JSON.parse(existing);
+      if (parsed && isValidEmail(parsed.email)) {
+        state.currentUser = parsed;
+        authScreen.style.display = 'none';
+        mainTerminal.style.display = 'block';
+        updateUserUI();
+      } else {
+        localStorage.removeItem('finn_auth_user');
+        authScreen.style.display = 'flex';
+        mainTerminal.style.display = 'none';
+      }
     } catch(e) {
       authScreen.style.display = 'flex';
       mainTerminal.style.display = 'none';
@@ -505,12 +637,17 @@ function initCategoryFilters() {
   });
 
   const toggleRoutineBtn = document.getElementById('toggle-routine-btn');
-  toggleRoutineBtn.addEventListener('click', () => {
-    state.showRoutine = !state.showRoutine;
-    const container = document.getElementById('routine-feed-container');
-    container.style.display = state.showRoutine ? 'block' : 'none';
-    toggleRoutineBtn.textContent = state.showRoutine ? 'Collapse Routine Filings' : '📁 4 Suppressed Routine Filings';
-  });
+  const routineBtnText = document.getElementById('routine-btn-text');
+  if (toggleRoutineBtn) {
+    toggleRoutineBtn.addEventListener('click', () => {
+      state.showRoutine = !state.showRoutine;
+      const container = document.getElementById('routine-feed-container');
+      if (container) container.style.display = state.showRoutine ? 'block' : 'none';
+      if (routineBtnText) {
+        routineBtnText.textContent = state.showRoutine ? 'Collapse Routine Filings' : '4 Suppressed Routine Filings (ESOPs, Compliances)';
+      }
+    });
+  }
 }
 
 // 1. PUSH MODE: THE WIRE (WINDOWED DIGEST)

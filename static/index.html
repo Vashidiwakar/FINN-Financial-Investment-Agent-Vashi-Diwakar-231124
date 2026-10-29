@@ -51,6 +51,8 @@
             </div>
           </div>
 
+          <div id="auth-error-msg" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid var(--accent-red); color: var(--accent-red); font-size: 11px; padding: 8px 10px; border-radius: 6px; margin-bottom: 12px; line-height: 1.4;"></div>
+
           <button id="auth-submit-btn" class="btn-primary" style="width: 100%; padding: 11px; font-size: 13px; font-weight: 700; border-radius: 8px;">
             Enter
           </button>
@@ -255,8 +257,9 @@
 
         <!-- Collapsed Routine Paperwork Drawer -->
         <div id="routine-drawer-wrap" style="margin-top: 14px;">
-          <button id="toggle-routine-btn" style="width: 100%; background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; padding: 9px; color: var(--text-muted); font-size: 11px; font-weight: 600; cursor: pointer; text-align: center;">
-            📁 4 Suppressed Routine Filings (ESOPs, Compliances)
+          <button id="toggle-routine-btn" style="width: 100%; background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; padding: 9px; color: var(--text-muted); font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <span id="routine-btn-text">4 Suppressed Routine Filings (ESOPs, Compliances)</span>
           </button>
           <div id="routine-feed-container" style="display: none; margin-top: 10px;"></div>
         </div>
