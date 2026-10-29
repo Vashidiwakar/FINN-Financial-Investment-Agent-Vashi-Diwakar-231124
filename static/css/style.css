@@ -54,10 +54,10 @@ body {
 .app-header {
   position: sticky;
   top: 0;
-  background: rgba(10, 14, 23, 0.92);
+  background: rgba(10, 14, 23, 0.94);
   backdrop-filter: blur(12px);
   z-index: 50;
-  padding: 12px 16px;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
@@ -74,7 +74,7 @@ body {
   background: linear-gradient(135deg, #f59e0b, #ef4444);
   color: #fff;
   font-weight: 900;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 0.5px;
   padding: 4px 8px;
   border-radius: var(--radius-sm);
@@ -82,26 +82,70 @@ body {
 
 .brand-title {
   font-weight: 700;
-  font-size: 17px;
+  font-size: 15px;
   letter-spacing: -0.3px;
 }
 
 .brand-sub {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--accent-gold);
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.8px;
 }
 
+.audio-pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  padding: 5px 9px;
+  border-radius: 20px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.audio-pill-btn:hover {
+  background: rgba(245, 158, 11, 0.2);
+}
+
+/* Animated Sound Wave */
+.sound-wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+}
+
+.sound-wave .bar {
+  width: 3px;
+  background: #f59e0b;
+  border-radius: 2px;
+  animation: wave 1s infinite ease-in-out;
+}
+
+.bar-1 { height: 8px; animation-delay: 0.1s; }
+.bar-2 { height: 16px; animation-delay: 0.3s; }
+.bar-3 { height: 12px; animation-delay: 0.2s; }
+.bar-4 { height: 18px; animation-delay: 0.4s; }
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+
 .status-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
+  gap: 5px;
+  font-size: 10px;
   color: var(--accent-green);
   background: rgba(16, 185, 129, 0.1);
-  padding: 4px 8px;
+  padding: 5px 8px;
   border-radius: 20px;
   border: 1px solid rgba(16, 185, 129, 0.25);
   cursor: pointer;
@@ -124,7 +168,7 @@ body {
 /* Tabs View */
 .view-panel {
   display: none;
-  padding: 16px;
+  padding: 14px;
 }
 
 .view-panel.active {
@@ -137,7 +181,7 @@ body {
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   scrollbar-width: none;
 }
 .filter-scroll::-webkit-scrollbar { display: none; }
@@ -147,8 +191,8 @@ body {
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
   border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 12px;
+  padding: 6px 12px;
+  font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
@@ -166,7 +210,7 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 14px;
+  padding: 12px 14px;
   margin-bottom: 12px;
   transition: transform 0.15s ease, background 0.15s ease;
 }
@@ -179,26 +223,26 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .company-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #fff;
 }
 
 .ticker-tag {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
 }
 
 .category-tag {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 4px;
   letter-spacing: 0.5px;
 }
@@ -211,40 +255,40 @@ body {
 .cat-routine { background: rgba(100, 116, 139, 0.2); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.4); }
 
 .card-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   margin-bottom: 6px;
   color: #e2e8f0;
 }
 
 .card-summary {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
   line-height: 1.4;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .takeaway-box {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.35);
   border-left: 3px solid var(--accent-gold);
-  padding: 8px 10px;
+  padding: 7px 9px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: #fef08a;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 /* Results Metrics Grid */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  gap: 5px;
   background: var(--bg-secondary);
-  padding: 10px;
+  padding: 8px;
   border-radius: var(--radius-sm);
-  margin-top: 8px;
-  margin-bottom: 10px;
+  margin-top: 6px;
+  margin-bottom: 8px;
   border: 1px solid var(--border-color);
 }
 
@@ -253,22 +297,22 @@ body {
 }
 
 .metric-label {
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text-muted);
   text-transform: uppercase;
   font-weight: 700;
 }
 
 .metric-value {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: #fff;
   font-family: var(--font-mono);
-  margin: 2px 0;
+  margin: 1px 0;
 }
 
 .metric-delta {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
 }
 
@@ -279,25 +323,25 @@ body {
 .executive-box {
   background: rgba(245, 158, 11, 0.08);
   border: 1px dashed rgba(245, 158, 11, 0.3);
-  padding: 10px;
+  padding: 8px 10px;
   border-radius: var(--radius-sm);
-  margin: 8px 0;
+  margin: 6px 0;
 }
 
 .exec-name {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: #fde68a;
 }
 
 .exec-role {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-secondary);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .exec-detail {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
   line-height: 1.35;
 }
@@ -306,7 +350,7 @@ body {
 .search-bar-wrap {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .ticker-input {
@@ -314,9 +358,9 @@ body {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   color: #fff;
-  padding: 10px 14px;
+  padding: 9px 12px;
   border-radius: var(--radius-sm);
-  font-size: 14px;
+  font-size: 13px;
   font-family: var(--font-mono);
   outline: none;
 }
@@ -330,8 +374,8 @@ body {
   color: #fff;
   border: none;
   border-radius: var(--radius-sm);
-  padding: 0 16px;
-  font-size: 13px;
+  padding: 0 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -342,7 +386,7 @@ body {
 .quick-tickers {
   display: flex;
   gap: 6px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 }
 
@@ -350,9 +394,9 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 12px;
-  font-size: 11px;
+  font-size: 10px;
   font-family: var(--font-mono);
   cursor: pointer;
 }
@@ -365,12 +409,12 @@ body {
 
 /* Narrative vs Numbers Table */
 .research-section-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--accent-gold);
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  margin: 16px 0 8px 0;
+  margin: 14px 0 6px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -380,28 +424,28 @@ body {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 10px;
-  margin-bottom: 8px;
+  padding: 9px;
+  margin-bottom: 7px;
 }
 
 .nvn-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .quarter-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: #93c5fd;
   font-family: var(--font-mono);
 }
 
 .verdict-badge {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
-  padding: 2px 6px;
+  padding: 2px 5px;
   border-radius: 4px;
 }
 
@@ -434,23 +478,23 @@ body {
 .credibility-box {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(59, 130, 246, 0.05));
   border: 1px solid rgba(245, 158, 11, 0.3);
-  padding: 12px;
+  padding: 10px 12px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
 .score-circle {
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 3px solid var(--accent-gold);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 900;
   color: #fff;
   flex-shrink: 0;
@@ -461,13 +505,13 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .thesis-card {
-  padding: 10px;
+  padding: 8px 10px;
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .bull-card {
@@ -480,6 +524,51 @@ body {
   background: rgba(239, 68, 68, 0.08);
   border: 1px solid rgba(239, 68, 68, 0.25);
   color: #fecaca;
+}
+
+/* Floating Copilot Button */
+#copilot-floating-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 18px;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  z-index: 90;
+  transition: transform 0.2s ease;
+}
+
+#copilot-floating-btn:hover {
+  transform: scale(1.05);
+}
+
+.copilot-pill {
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 3px 8px;
+  font-size: 10px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.copilot-pill:hover {
+  background: #334155;
+  color: #fff;
+}
+
+/* Sparklines */
+.sparkline-svg {
+  width: 60px;
+  height: 20px;
+  overflow: visible;
 }
 
 /* Bottom Navigation Bar */
@@ -501,7 +590,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   background: none;
   border: none;
   color: var(--text-muted);
@@ -516,16 +605,16 @@ body {
 }
 
 .nav-icon {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 /* Anomaly Tag */
 .badge-alert {
   background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 2px 5px;
   border-radius: 4px;
   border: 1px solid rgba(239, 68, 68, 0.4);
 }

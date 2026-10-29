@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
   <title>FINN | Financial Investment Agent</title>
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
@@ -17,13 +21,38 @@
           <div class="brand-sub">ENAM Intelligence Layer</div>
         </div>
       </div>
-      <div class="status-pill" id="threshold-toggle-btn" title="Click to configure alert thresholds">
-        <span class="pulse-dot"></span>
-        <span id="active-thresholds-text">Vol >1.8x | ±3.0%</span>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button id="audio-dispatch-toggle" class="audio-pill-btn" title="Listen to 60-Second Morning Dispatch">
+          <span class="audio-icon">▶</span>
+          <span id="audio-label">Listen 60s</span>
+        </button>
+        <div class="status-pill" id="threshold-toggle-btn" title="Click to configure alert thresholds">
+          <span class="pulse-dot"></span>
+          <span id="active-thresholds-text">Vol >1.8x | ±3.0%</span>
+        </div>
       </div>
     </header>
 
-    <!-- Config Modal (Thresholds) -->
+    <!-- Audio Player Banner (Hidden by default, shown when playing) -->
+    <div id="audio-banner" style="display: none; background: linear-gradient(135deg, #1e293b, #0f172a); border-bottom: 1px solid #334155; padding: 10px 16px; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="sound-wave">
+          <span class="bar bar-1"></span>
+          <span class="bar bar-2"></span>
+          <span class="bar bar-3"></span>
+          <span class="bar bar-4"></span>
+        </div>
+        <div>
+          <div style="font-size: 11px; font-weight: 700; color: #f59e0b;">FINN Morning Voice Dispatch</div>
+          <div style="font-size: 10px; color: #94a3b8;">Synthesized Executive Briefing (60s)</div>
+        </div>
+      </div>
+      <button id="stop-audio-btn" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; border-radius: 6px; padding: 3px 8px; font-size: 10px; font-weight: 700; cursor: pointer;">
+        Stop ⏹
+      </button>
+    </div>
+
+    <!-- Threshold Configuration Modal -->
     <div id="threshold-modal" style="display: none; background: #131b2e; border: 1px solid #24324f; border-radius: 12px; margin: 12px 16px; padding: 14px; z-index: 60;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
         <span style="font-size: 13px; font-weight: 700; color: #f59e0b;">⚙️ Triggered Alert Thresholds</span>
@@ -47,14 +76,21 @@
       </div>
     </div>
 
+    <!-- Toast Notification for Quick Actions -->
+    <div id="toast-notify" style="display: none; position: fixed; top: 60px; left: 50%; transform: translateX(-50%); background: #10b981; color: #000; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+      Copied to Clipboard!
+    </div>
+
     <!-- 1. PUSH MODE: THE WIRE (WINDOWED DIGEST) -->
     <main id="view-digest" class="view-panel active">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
         <div>
           <h2 style="font-size: 16px; font-weight: 800;">The Wire</h2>
-          <p style="font-size: 11px; color: #94a3b8;">Windowed Priority Digest (Past 24h across Portfolio)</p>
+          <p style="font-size: 11px; color: #94a3b8;">Windowed Priority Digest (24h across Portfolio)</p>
         </div>
-        <span id="digest-stats-badge" style="font-size: 10px; font-family: monospace; background: #1e293b; padding: 4px 8px; border-radius: 6px; color: #38bdf8;">Loading...</span>
+        <button id="copy-memo-btn" style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.35); color: #60a5fa; border-radius: 8px; padding: 4px 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+          <span>📋</span> Share Memo
+        </button>
       </div>
 
       <!-- Category Filter Pills -->
@@ -68,9 +104,7 @@
       </div>
 
       <!-- Feed Container -->
-      <div id="digest-feed-container">
-        <!-- Rendered by app.js -->
-      </div>
+      <div id="digest-feed-container"></div>
 
       <!-- Collapsed Routine Paperwork Drawer -->
       <div id="routine-drawer-wrap" style="margin-top: 14px;">
@@ -87,9 +121,7 @@
         <h2 style="font-size: 16px; font-weight: 800;">Triggered Alerts</h2>
         <p style="font-size: 11px; color: #94a3b8;">Threshold Breaches & Tier-1 High Conviction Events</p>
       </div>
-      <div id="alerts-container">
-        <!-- Rendered by app.js -->
-      </div>
+      <div id="alerts-container"></div>
     </section>
 
     <!-- 3. PULL MODE: RESEARCH & NARRATIVE VS NUMBERS -->
@@ -110,26 +142,58 @@
         <span class="chip-ticker active" data-sym="TATAMOTORS.NS">TATAMOTORS</span>
         <span class="chip-ticker" data-sym="TRENT.NS">TRENT</span>
         <span class="chip-ticker" data-sym="ZOMATO.NS">ZOMATO (Ad-hoc)</span>
-        <span class="chip-ticker" data-sym="RELIANCE.NS">RELIANCE</span>
         <span class="chip-ticker" data-sym="DIXON.NS">DIXON</span>
+        <span class="chip-ticker" data-sym="RELIANCE.NS">RELIANCE</span>
       </div>
 
       <!-- Research Result Output -->
-      <div id="research-output-container">
-        <!-- Rendered by app.js -->
-      </div>
+      <div id="research-output-container"></div>
     </section>
 
-    <!-- 4. PORTFOLIO RADAR (EOD Metrics) -->
+    <!-- 4. PORTFOLIO RADAR (EOD Metrics + Sparklines) -->
     <section id="view-portfolio" class="view-panel">
       <div style="margin-bottom: 12px;">
         <h2 style="font-size: 16px; font-weight: 800;">Portfolio Radar</h2>
-        <p style="font-size: 11px; color: #94a3b8;">16 Core Watchlist Stocks | EOD Price & Volume Multiples</p>
+        <p style="font-size: 11px; color: #94a3b8;">16 Core Watchlist Stocks | EOD Price & 20-Day Trend</p>
       </div>
-      <div id="portfolio-container">
-        <!-- Rendered by app.js -->
-      </div>
+      <div id="portfolio-container"></div>
     </section>
+
+    <!-- Floating Interactive Copilot Button -->
+    <div id="copilot-floating-btn" title="Ask FINN Financial Analyst">
+      <span style="font-size: 18px;">💬</span>
+      <span style="font-size: 11px; font-weight: 700;">Ask FINN</span>
+    </div>
+
+    <!-- Copilot Drawer Modal -->
+    <div id="copilot-drawer" style="display: none; position: fixed; bottom: 65px; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: #0f172a; border-top: 1px solid #334155; border-radius: 16px 16px 0 0; padding: 16px; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); z-index: 120;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="background: #3b82f6; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">COPILOT</span>
+          <span style="font-size: 13px; font-weight: 700; color: #f8fafc;">Primary-Source Analyst</span>
+        </div>
+        <button id="close-copilot-btn" style="background: none; border: none; color: #94a3b8; font-size: 18px; cursor: pointer;">✕</button>
+      </div>
+
+      <!-- Quick Prompt Suggestions -->
+      <div style="display: flex; gap: 6px; overflow-x: auto; margin-bottom: 10px; padding-bottom: 4px; scrollbar-width: none;">
+        <button class="copilot-pill" data-q="What did Tata Motors say about JLR margins?">JLR Margins</button>
+        <button class="copilot-pill" data-q="What is Trent's Zudio store addition guidance?">Trent Zudio Plan</button>
+        <button class="copilot-pill" data-q="What is Zomato Blinkit dark store target?">Blinkit Dark Stores</button>
+        <button class="copilot-pill" data-q="Does Tata Motors convert profit to liquid cash?">Cash Quality Check</button>
+      </div>
+
+      <div id="copilot-chat-history" style="max-height: 220px; overflow-y: auto; margin-bottom: 10px; font-size: 12px; color: #cbd5e1; line-height: 1.45;">
+        <div style="background: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 6px; border-left: 3px solid #3b82f6;">
+          Ask any specific question about guidance, capex, segment margins, or concall statements. Grounded strictly in primary documents.
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="copilot-input" class="ticker-input" placeholder="Ask about guidance, margins, cash flow..." style="font-size: 12px; padding: 8px 12px;">
+        <button id="copilot-send-btn" class="btn-primary" style="padding: 0 14px; font-size: 12px;">Ask</button>
+      </div>
+    </div>
 
     <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">

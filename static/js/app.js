@@ -1,10 +1,12 @@
-// FINN - Financial Investment Agent Mobile Client
+// FINN - Financial Investment Agent Mobile Client (v1.1.0)
 let state = {
   priceThreshold: 3.0,
   volThreshold: 1.8,
   activeCategory: 'all',
   activeTicker: 'TATAMOTORS.NS',
   showRoutine: false,
+  isPlayingAudio: false,
+  speechSynthUtterance: null
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initThresholds();
   initCategoryFilters();
   initResearchModule();
+  initAudioDispatch();
+  initWhatsAppShare();
+  initCopilotDrawer();
   
   // Initial data load
   loadDigest();
@@ -41,6 +46,165 @@ function initNav() {
   });
 }
 
+// 60-Second Audio Voice Dispatch
+function initAudioDispatch() {
+  const toggleBtn = document.getElementById('audio-dispatch-toggle');
+  const banner = document.getElementById('audio-banner');
+  const stopBtn = document.getElementById('stop-audio-btn');
+
+  toggleBtn.addEventListener('click', async () => {
+    if (state.isPlayingAudio) {
+      stopAudio();
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/audio-dispatch');
+      const data = await res.json();
+      playVoiceBriefing(data.script);
+    } catch (e) {
+      showToast('Error playing audio brief');
+    }
+  });
+
+  stopBtn.addEventListener('click', stopAudio);
+}
+
+function playVoiceBriefing(text) {
+  if (!('speechSynthesis' in window)) {
+    showToast('Speech synthesis not supported in this browser');
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1.05; // Slightly faster executive pace
+  utterance.pitch = 0.95;
+
+  utterance.onstart = () => {
+    state.isPlayingAudio = true;
+    document.getElementById('audio-banner').style.display = 'flex';
+    document.getElementById('audio-label').textContent = 'Playing...';
+  };
+
+  utterance.onend = stopAudio;
+  utterance.onerror = stopAudio;
+
+  state.speechSynthUtterance = utterance;
+  window.speechSynthesis.speak(utterance);
+}
+
+function stopAudio() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  state.isPlayingAudio = false;
+  const banner = document.getElementById('audio-banner');
+  if (banner) banner.style.display = 'none';
+  const label = document.getElementById('audio-label');
+  if (label) label.textContent = 'Listen 60s';
+}
+
+// WhatsApp / Telegram Share Memo
+function initWhatsAppShare() {
+  const copyBtn = document.getElementById('copy-memo-btn');
+  copyBtn.addEventListener('click', async () => {
+    try {
+      const res = await fetch('/api/whatsapp-memo');
+      const data = await res.json();
+      await navigator.clipboard.writeText(data.memo);
+      showToast('Copied WhatsApp Memo to Clipboard!');
+    } catch (e) {
+      showToast('Failed to copy memo');
+    }
+  });
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast-notify');
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 2200);
+}
+
+// Interactive Financial Copilot
+function initCopilotDrawer() {
+  const floatBtn = document.getElementById('copilot-floating-btn');
+  const drawer = document.getElementById('copilot-drawer');
+  const closeBtn = document.getElementById('close-copilot-btn');
+  const sendBtn = document.getElementById('copilot-send-btn');
+  const input = document.getElementById('copilot-input');
+  const pills = document.querySelectorAll('.copilot-pill');
+
+  floatBtn.addEventListener('click', () => {
+    drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
+    if (drawer.style.display === 'block') input.focus();
+  });
+
+  closeBtn.addEventListener('click', () => {
+    drawer.style.display = 'none';
+  });
+
+  sendBtn.addEventListener('click', () => {
+    if (input.value.trim()) handleCopilotQuery(input.value.trim());
+  });
+
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && input.value.trim()) handleCopilotQuery(input.value.trim());
+  });
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      const q = pill.getAttribute('data-q');
+      input.value = q;
+      handleCopilotQuery(q);
+    });
+  });
+}
+
+async function handleCopilotQuery(query) {
+  const history = document.getElementById('copilot-chat-history');
+  const input = document.getElementById('copilot-input');
+  input.value = '';
+
+  // Append user message
+  history.innerHTML += `
+    <div style="background:#2563eb; color:#fff; padding:6px 10px; border-radius:8px 8px 0 8px; margin-bottom:6px; margin-left:20px; font-weight:600;">
+      ${query}
+    </div>
+    <div id="copilot-loading" style="background:#1e293b; color:#94a3b8; padding:8px 10px; border-radius:8px; margin-bottom:6px; font-size:11px;">
+      Searching primary filings & concall transcripts...
+    </div>
+  `;
+  history.scrollTop = history.scrollHeight;
+
+  try {
+    const res = await fetch('/api/copilot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: query, ticker: state.activeTicker })
+    });
+    const data = await res.json();
+
+    const loadingEl = document.getElementById('copilot-loading');
+    if (loadingEl) loadingEl.remove();
+
+    history.innerHTML += `
+      <div style="background:#1e293b; border-left:3px solid #3b82f6; padding:8px 10px; border-radius:8px; margin-bottom:8px;">
+        <div style="color:#e2e8f0; margin-bottom:4px;">${data.grounded_response}</div>
+        <div style="font-size:9px; color:#38bdf8; font-family:monospace;">
+          ${data.citations.map(c => `📄 Citation: ${c}`).join('<br>')}
+        </div>
+      </div>
+    `;
+    history.scrollTop = history.scrollHeight;
+  } catch (err) {
+    const loadingEl = document.getElementById('copilot-loading');
+    if (loadingEl) loadingEl.remove();
+    history.innerHTML += `<div style="color:#ef4444; font-size:11px; margin-bottom:6px;">Error: ${err.message}</div>`;
+  }
+}
+
 // Threshold Configuration Modal
 function initThresholds() {
   const toggleBtn = document.getElementById('threshold-toggle-btn');
@@ -55,7 +219,6 @@ function initThresholds() {
     modal.style.display = 'none';
   });
 
-  // Price buttons
   document.querySelectorAll('.thresh-p-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.thresh-p-btn').forEach(b => b.classList.remove('active'));
@@ -67,7 +230,6 @@ function initThresholds() {
     });
   });
 
-  // Volume buttons
   document.querySelectorAll('.thresh-v-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.thresh-v-btn').forEach(b => b.classList.remove('active'));
@@ -109,15 +271,12 @@ function initCategoryFilters() {
 async function loadDigest() {
   const container = document.getElementById('digest-feed-container');
   const routineContainer = document.getElementById('routine-feed-container');
-  const statsBadge = document.getElementById('digest-stats-badge');
 
   container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b; font-size:12px;">Scanning portfolio filings...</div>';
 
   try {
     const res = await fetch(`/api/digest?window=24&category=${state.activeCategory}&include_routine=false`);
     const data = await res.json();
-
-    statsBadge.textContent = `${data.high_priority_count + data.medium_priority_count} Signals | ${data.routine_collapsed_count} Routine`;
 
     if (!data.feed || data.feed.length === 0) {
       container.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b; font-size:12px;">No material announcements in this filter window.</div>';
@@ -126,13 +285,12 @@ async function loadDigest() {
 
     container.innerHTML = data.feed.map(item => renderAnnouncementCard(item)).join('');
     
-    // Render collapsed routine
     if (data.collapsed_routine && data.collapsed_routine.length > 0) {
       routineContainer.innerHTML = data.collapsed_routine.map(item => `
-        <div style="background:#131b2e; border:1px solid #24324f; border-radius:8px; padding:10px; margin-bottom:8px; font-size:11px;">
-          <div style="display:flex; justify-content:space-between; color:#64748b; margin-bottom:4px;">
+        <div style="background:#131b2e; border:1px solid #24324f; border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:11px;">
+          <div style="display:flex; justify-content:space-between; color:#64748b; margin-bottom:2px;">
             <span style="font-weight:700;">${item.ticker}</span>
-            <span style="font-size:9px;">ROUTINE FILING</span>
+            <span style="font-size:8px;">ROUTINE FILING</span>
           </div>
           <div style="color:#94a3b8;">${item.title}</div>
         </div>
@@ -147,7 +305,6 @@ function renderAnnouncementCard(item) {
   const cat = item.category || 'unclassified';
   const catClass = `cat-${cat.replace('_', '')}`;
   
-  // Custom enrichment for Quarterly Results
   let metricsHtml = '';
   if (cat === 'results' && item.metrics) {
     const m = item.metrics;
@@ -177,7 +334,6 @@ function renderAnnouncementCard(item) {
     `;
   }
 
-  // Custom enrichment for Management Changes (Incoming Executive Bio)
   let execHtml = '';
   if (cat === 'management_change' && item.executive_enrichment) {
     const ex = item.executive_enrichment;
@@ -223,7 +379,7 @@ function renderAnnouncementCard(item) {
   `;
 }
 
-// 2. TRIGGERED ALERTS
+// 2. TRIGGERED ALERTS (with Sparklines)
 async function loadAlerts() {
   const container = document.getElementById('alerts-container');
   container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b; font-size:12px;">Evaluating live alert triggers...</div>';
@@ -244,10 +400,13 @@ async function loadAlerts() {
             <span class="badge-alert">${alert.category.replace('_', ' ').toUpperCase()}</span>
             <div class="company-title" style="margin-top:4px;">${alert.company} (${alert.ticker})</div>
           </div>
-          <span style="font-size:10px; font-family:monospace; color:#94a3b8;">${alert.severity}</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            ${alert.price_history ? renderSparklineSVG(alert.price_history) : ''}
+            <span style="font-size:9px; font-family:monospace; color:#94a3b8;">${alert.severity}</span>
+          </div>
         </div>
-        <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:4px;">${alert.headline}</div>
-        <div style="font-size:12px; color:#cbd5e1;">${alert.detail}</div>
+        <div style="font-size:12px; font-weight:700; color:#fff; margin-bottom:3px;">${alert.headline}</div>
+        <div style="font-size:11px; color:#cbd5e1;">${alert.detail}</div>
       </div>
     `).join('');
   } catch (err) {
@@ -261,15 +420,11 @@ function initResearchModule() {
   const input = document.getElementById('research-ticker-input');
 
   runBtn.addEventListener('click', () => {
-    if (input.value.trim()) {
-      runResearch(input.value.trim());
-    }
+    if (input.value.trim()) runResearch(input.value.trim());
   });
 
   input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && input.value.trim()) {
-      runResearch(input.value.trim());
-    }
+    if (e.key === 'Enter' && input.value.trim()) runResearch(input.value.trim());
   });
 
   document.querySelectorAll('.chip-ticker').forEach(chip => {
@@ -284,11 +439,12 @@ function initResearchModule() {
 }
 
 async function runResearch(ticker) {
+  state.activeTicker = ticker;
   const container = document.getElementById('research-output-container');
   container.innerHTML = `
-    <div style="text-align:center; padding:40px; color:#64748b; font-size:12px;">
-      <div class="pulse-dot" style="margin: 0 auto 12px auto;"></div>
-      Parsing Primary Concall Transcripts & Annual Reports for <strong>${ticker}</strong>...
+    <div style="text-align:center; padding:30px; color:#64748b; font-size:12px;">
+      <div class="pulse-dot" style="margin: 0 auto 10px auto;"></div>
+      Auditing Primary Concall Transcripts & Annual Reports for <strong>${ticker}</strong>...
     </div>
   `;
 
@@ -299,18 +455,18 @@ async function runResearch(ticker) {
 
     container.innerHTML = `
       <!-- Company Snapshot -->
-      <div class="card" style="margin-top:10px;">
-        <div style="font-size:16px; font-weight:800; color:#fff;">${r.company_name}</div>
-        <div style="font-size:11px; color:#94a3b8; margin-bottom:8px;">${r.sector}</div>
-        <div style="font-size:12px; color:#cbd5e1; margin-bottom:8px;">${r.business_snapshot.summary}</div>
-        <div style="font-size:11px; color:#38bdf8;"><strong>Segments:</strong> ${r.business_snapshot.revenue_mix}</div>
+      <div class="card" style="margin-top:8px;">
+        <div style="font-size:15px; font-weight:800; color:#fff;">${r.company_name}</div>
+        <div style="font-size:11px; color:#94a3b8; margin-bottom:6px;">${r.sector}</div>
+        <div style="font-size:11px; color:#cbd5e1; margin-bottom:6px;">${r.business_snapshot.summary}</div>
+        <div style="font-size:10px; color:#38bdf8;"><strong>Segments:</strong> ${r.business_snapshot.revenue_mix}</div>
       </div>
 
       <!-- Credibility Score Gauge -->
       <div class="credibility-box">
         <div class="score-circle">${r.credibility_score.score}</div>
         <div>
-          <div style="font-size:13px; font-weight:800; color:#fef08a;">${r.credibility_score.rating}</div>
+          <div style="font-size:12px; font-weight:800; color:#fef08a;">${r.credibility_score.rating}</div>
           <div style="font-size:11px; color:#cbd5e1; line-height:1.35;">${r.credibility_score.commentary}</div>
         </div>
       </div>
@@ -318,7 +474,7 @@ async function runResearch(ticker) {
       <!-- Narrative vs Numbers 4-Quarter Delivery Table -->
       <div class="research-section-title">
         <span>Narrative vs. Numbers</span>
-        <span style="font-size:10px; color:#94a3b8;">Last 4 Quarters</span>
+        <span style="font-size:9px; color:#94a3b8;">Last 4 Quarters</span>
       </div>
 
       ${r.narrative_vs_numbers.map(item => `
@@ -336,10 +492,10 @@ async function runResearch(ticker) {
       <!-- Cash Quality & Conversion -->
       <div class="research-section-title">
         <span>Cash Quality & Conversion</span>
-        <span style="font-size:10px; color:#10b981;">CFO/PAT: ${r.cash_quality.cfo_to_pat}</span>
+        <span style="font-size:9px; color:#10b981;">CFO/PAT: ${r.cash_quality.cfo_to_pat}</span>
       </div>
       <div class="card">
-        <div style="font-size:12px; font-weight:700; color:#34d399; margin-bottom:4px;">${r.cash_quality.cash_conversion_verdict}</div>
+        <div style="font-size:11px; font-weight:700; color:#34d399; margin-bottom:3px;">${r.cash_quality.cash_conversion_verdict}</div>
         <div style="font-size:11px; color:#cbd5e1;">Free Cash Flow: ${r.cash_quality.fcf_generated}</div>
       </div>
 
@@ -349,21 +505,21 @@ async function runResearch(ticker) {
       </div>
       <div class="thesis-grid">
         <div class="thesis-card bull-card">
-          <div style="font-weight:800; margin-bottom:4px; color:#34d399;">🐂 BULL CASE</div>
-          <ul style="padding-left:14px; margin:0;">
-            ${r.bull_vs_bear.bull_case.map(pt => `<li style="margin-bottom:4px;">${pt}</li>`).join('')}
+          <div style="font-weight:800; margin-bottom:3px; color:#34d399;">🐂 BULL CASE</div>
+          <ul style="padding-left:12px; margin:0;">
+            ${r.bull_vs_bear.bull_case.map(pt => `<li style="margin-bottom:3px;">${pt}</li>`).join('')}
           </ul>
         </div>
         <div class="thesis-card bear-card">
-          <div style="font-weight:800; margin-bottom:4px; color:#f87171;">🐻 BEAR CASE</div>
-          <ul style="padding-left:14px; margin:0;">
-            ${r.bull_vs_bear.bear_case.map(pt => `<li style="margin-bottom:4px;">${pt}</li>`).join('')}
+          <div style="font-weight:800; margin-bottom:3px; color:#f87171;">🐻 BEAR CASE</div>
+          <ul style="padding-left:12px; margin:0;">
+            ${r.bull_vs_bear.bear_case.map(pt => `<li style="margin-bottom:3px;">${pt}</li>`).join('')}
           </ul>
         </div>
       </div>
 
       <!-- Primary Sources Checked -->
-      <div style="margin-top:14px; padding:10px; background:#111827; border-radius:8px; font-size:10px; color:#64748b;">
+      <div style="margin-top:12px; padding:8px 10px; background:#111827; border-radius:8px; font-size:10px; color:#64748b;">
         <strong style="color:#94a3b8;">Primary Source Links Verified:</strong>
         <div style="margin-top:4px;">
           <a href="${r.annual_report_url}" target="_blank" style="color:#38bdf8; text-decoration:none; margin-right:12px;">Audited Annual Reports ↗</a>
@@ -376,7 +532,7 @@ async function runResearch(ticker) {
   }
 }
 
-// 4. PORTFOLIO RADAR (EOD Metrics)
+// 4. PORTFOLIO RADAR (with Mini Sparklines)
 async function loadPortfolio() {
   const container = document.getElementById('portfolio-container');
   container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b; font-size:12px;">Fetching 20-day baseline metrics...</div>';
@@ -388,14 +544,18 @@ async function loadPortfolio() {
     container.innerHTML = data.data.map(stock => {
       const isUp = stock.pct_change >= 0;
       const isAnomalousVol = stock.is_unusual_volume;
-      const isAnomalousPrice = stock.is_unusual_price;
 
       return `
-        <div class="card" style="padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-          <div>
+        <div class="card" style="padding:9px 12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="flex:1;">
             <div style="font-size:13px; font-weight:700; color:#fff;">${stock.name}</div>
             <div style="font-size:10px; color:#94a3b8; font-family:monospace;">${stock.ticker} · ${stock.sector}</div>
           </div>
+          
+          <div style="margin: 0 10px;">
+            ${renderSparklineSVG(stock.price_history || [100, 101, 102, 101, 103, 104])}
+          </div>
+
           <div style="text-align:right;">
             <div style="font-size:13px; font-weight:700; font-family:monospace; color:${isUp ? '#10b981' : '#ef4444'};">
               ${isUp ? '+' : ''}${stock.pct_change}%
@@ -410,6 +570,31 @@ async function loadPortfolio() {
   } catch (err) {
     container.innerHTML = `<div style="color:#ef4444; font-size:12px; padding:20px;">Error loading portfolio: ${err.message}</div>`;
   }
+}
+
+// Mini SVG Sparkline Generator
+function renderSparklineSVG(points) {
+  if (!points || points.length < 2) return '';
+  const min = Math.min(...points);
+  const max = Math.max(...points);
+  const range = max - min || 1;
+  const height = 18;
+  const width = 50;
+
+  const coords = points.map((val, idx) => {
+    const x = (idx / (points.length - 1)) * width;
+    const y = height - ((val - min) / range) * height;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+
+  const isUp = points[points.length - 1] >= points[0];
+  const color = isUp ? '#10b981' : '#ef4444';
+
+  return `
+    <svg class="sparkline-svg" viewBox="0 0 ${width} ${height}">
+      <polyline fill="none" stroke="${color}" stroke-width="1.8" points="${coords}" />
+    </svg>
+  `;
 }
 
 function formatTime(isoStr) {

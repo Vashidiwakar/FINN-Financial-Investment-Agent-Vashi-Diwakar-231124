@@ -1,10 +1,9 @@
 """
-Smoke test suite for FINN backend endpoints.
+Smoke test suite for FINN backend endpoints (v1.1.0).
 """
 import sys
 import os
 
-# Ensure UTF-8 output on Windows terminal
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
 
@@ -24,7 +23,8 @@ def test_portfolio():
     assert res.status_code == 200
     data = res.json()
     assert data["count"] >= 15
-    print(f"[PASS] Portfolio endpoint passed ({data['count']} stocks monitored)")
+    assert "price_history" in data["data"][0]
+    print(f"[PASS] Portfolio endpoint passed ({data['count']} stocks + sparkline data)")
 
 def test_digest():
     res = client.get("/api/digest?window=24&category=all")
@@ -48,16 +48,36 @@ def test_research():
     assert "narrative_vs_numbers" in data["research"]
     print("[PASS] Pull Research (Narrative vs Numbers) passed for TATAMOTORS.NS")
 
-    # Test ad-hoc outside ticker generalisation
     res_adhoc = client.get("/api/research?ticker=ZOMATO.NS")
     assert res_adhoc.status_code == 200
     print("[PASS] Pull Research generalisation passed for ad-hoc ZOMATO.NS")
 
+def test_copilot():
+    res = client.post("/api/copilot", json={"query": "What did Tata Motors say about JLR margins?", "ticker": "TATAMOTORS.NS"})
+    assert res.status_code == 200
+    data = res.json()
+    assert "grounded_response" in data
+    assert len(data["citations"]) > 0
+    print("[PASS] Interactive Copilot passed with verified primary citation")
+
+def test_audio_and_memo():
+    res_audio = client.get("/api/audio-dispatch")
+    assert res_audio.status_code == 200
+    assert "script" in res_audio.json()
+    print("[PASS] 60-Second Audio Dispatch endpoint passed")
+
+    res_memo = client.get("/api/whatsapp-memo")
+    assert res_memo.status_code == 200
+    assert "memo" in res_memo.json()
+    print("[PASS] WhatsApp / Telegram executive memo endpoint passed")
+
 if __name__ == "__main__":
-    print("Running FINN End-to-End Smoke Tests...")
+    print("Running FINN v1.1.0 End-to-End Smoke Tests...")
     test_health()
     test_portfolio()
     test_digest()
     test_alerts()
     test_research()
-    print("\n>>> ALL FINN SYSTEMS OPERATIONAL & VALIDATED! <<<\n")
+    test_copilot()
+    test_audio_and_memo()
+    print("\n>>> ALL FINN v1.1.0 SYSTEMS OPERATIONAL & VALIDATED! <<<\n")

@@ -5,7 +5,7 @@ FINN is a mobile-first financial investment agent built for public-markets inves
 
 ---
 
-## 🚀 Quick Start (Running the Application)
+## Quick Start (Running the Application)
 
 ### 1. Requirements
 - Python 3.10+
@@ -34,7 +34,7 @@ python test_agent.py
 
 ---
 
-## 📱 Core Product Features
+## Core Product Features
 
 ### 1. Push Mode: The Wire (Windowed Digest)
 - Aggregates corporate filings across a 16-company portfolio over a customizable time window (24 hours default).
@@ -61,7 +61,7 @@ python test_agent.py
 
 ---
 
-## 🏛️ Project Directory Structure
+## Project Directory Structure
 
 ```
 ENAM_Assignment/
@@ -91,7 +91,7 @@ ENAM_Assignment/
 
 ---
 
-## 📬 Submission Checklist
+## Submission Checklist
 - [x] Mobile-first working prototype (`run.py` / responsive web)
 - [x] Clean modular repository structure
 - [x] Covering note drafted at [`submission/COVERING_NOTE.md`](submission/COVERING_NOTE.md)
