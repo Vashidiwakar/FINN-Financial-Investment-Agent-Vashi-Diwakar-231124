@@ -44,9 +44,9 @@
           <div style="margin-bottom: 18px;">
             <label style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Password</label>
             <div style="position: relative; margin-top: 4px;">
-              <input type="password" id="auth-password" class="ticker-input" placeholder="••••••••" value="password123" style="width: 100%; padding-right: 38px;">
-              <button type="button" id="toggle-pwd-btn" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center;" title="Show/Hide Password">
-                <svg id="pwd-eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="3" r="3"></circle></svg>
+              <input type="password" id="auth-password" class="ticker-input" placeholder="Password" value="password123" autocomplete="current-password" style="width: 100%; padding-right: 38px;">
+              <button type="button" id="toggle-pwd-btn" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center; z-index: 5;" title="Show/Hide Password">
+                <svg id="pwd-eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
               </button>
             </div>
           </div>

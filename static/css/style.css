@@ -620,6 +620,22 @@ body {
   border-color: var(--accent-blue);
 }
 
+/* Suppress browser native password reveal / clear buttons to prevent collision with custom toggle button */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
+input::-webkit-credentials-auto-fill-button {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: absolute;
+  right: 0;
+}
+
 .btn-primary {
   background: var(--accent-blue);
   color: #fff;
