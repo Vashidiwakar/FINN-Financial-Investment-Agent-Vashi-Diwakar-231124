@@ -1,11 +1,103 @@
 # FINN — Financial Investment Agent
 ### ENAM Holdings AI Engineer Build Challenge (2027 Screening)
 
-**FINN** is a mobile-first investment intelligence agent engineered specifically for public markets investors. Instead of creating more noise, FINN acts as an aggressive filter and research analyst companion: prioritizing high-signal developments, suppressing routine corporate filing paperwork, and cross-referencing management narrative against audited delivery.
+> **Submission Status:** `READY FOR EVALUATION`  
+> **Test Suite:** 9/9 Integration Smoke Tests Passing (`test_agent.py`)  
+> **Candidate:** Vashi Diwakar (4th Year Undergraduate, Electrical Engineering, IIT Kanpur)  
+> **Target Reviewers:** ENAM Evaluation Team (`assessment@enam.com`)
 
 ---
 
-## 1. Core Functionality of the Agent
+## Executive Summary
+
+**FINN** is a mobile-first investment intelligence agent engineered specifically for high-conviction public markets investors. Instead of creating more noise, FINN acts as an aggressive filter and research analyst companion: prioritizing high-signal developments, suppressing routine corporate filing paperwork, and cross-referencing management narrative against audited delivery.
+
+---
+
+## 1. Quick Start for Evaluators
+
+### Step 1: Clone & Install Dependencies
+Ensure you have **Python 3.10+** installed:
+```bash
+# Clone repository & enter directory
+git clone <repository-url>
+cd ENAM_Assignment
+
+# Install minimal dependencies
+pip install -r requirements.txt
+```
+
+### Step 2: Run Automated Smoke Tests
+Validate that all backend endpoints, data feeds, and research engines are operational:
+```bash
+python test_agent.py
+```
+*(Expected output: All 9 test suites pass with `[PASS]` tags)*.
+
+### Step 3: Launch the Prototype
+```bash
+python run.py
+```
+This boots the server on port `8000` and automatically opens `http://localhost:8000` in your default browser.
+
+### Evaluator Quick-Start Credentials
+When the prototype opens, use the **One-Click Evaluator Sign In** button or manually enter the pre-registered credentials:
+* **Email:** `example@example.com`
+* **Password:** `password123`
+*(Or switch to "Create Account" to test new analyst registrations with real-time email verification).*
+
+---
+
+## 2. How to Test on Phone & Laptop
+
+FINN is built **mobile-first** (`max-width: 480px`) to serve portfolio managers and analysts on the move.
+
+### A. Testing on Laptop / Desktop (Mobile Simulator)
+For the best evaluator experience on a desktop:
+1. Open `http://localhost:8000` in **Chrome** or **Edge**.
+2. Press **`F12`** (or right-click anywhere $\rightarrow$ **Inspect**).
+3. Press **`Ctrl + Shift + M`** (Toggle Device Toolbar).
+4. Select **iPhone 14 / iPhone 15 Pro** or **Pixel 7** from the top device dropdown to test touch scrolling, drawers, and tabs.
+
+---
+
+### B. Testing Directly on a Smartphone
+
+#### Method 1: Local Network (Zero Setup)
+`run.py` automatically binds to `0.0.0.0` and detects your machine's local IP address.
+
+1. **Connect your phone and laptop to the same Wi-Fi network** (or connect your laptop to your phone's personal hotspot).
+2. On your laptop, run:
+   ```bash
+   python run.py
+   ```
+3. The terminal prints your mobile URL:
+   ```text
+   =================================================================
+     FINN: Financial Investment Agent (ENAM Holdings Challenge)
+     Mobile-First AI Intelligence Layer for Public Markets
+   =================================================================
+
+     [Local PC]    : http://localhost:8000
+     [On Your Phone]: http://<YOUR-LOCAL-IP>:8000 (e.g. http://192.168.1.5:8000)
+   =================================================================
+   ```
+4. Open **Safari** (iOS) or **Chrome** (Android) on your phone and navigate to `http://<YOUR-LOCAL-IP>:8000`.  
+*(If Windows Defender Firewall prompts you, select **"Allow access"**).*
+
+#### Method 2: If on Corporate / Organization Wi-Fi (Client Isolation)
+Enterprise office and organization Wi-Fi networks frequently block direct peer-to-peer device communication for network security. If Method 1 does not connect:
+
+* **Option A (Personal Hotspot):** Turn on your phone's personal hotspot, connect your laptop to it, and re-run `python run.py`.
+* **Option B (Instant Free Tunnel via LocalTunnel):** In a second terminal on your PC, run:
+  ```bash
+  npx localtunnel --port 8000
+  ```
+  This generates a public HTTPS link (e.g. `https://finn-eval.loca.lt`) that you can open from **any smartphone on cellular data (4G/5G)** without network restrictions.
+
+---
+
+## 3. Core Functionality of the Agent
 
 FINN operates across two primary modes: **Push (Proactive Intelligence)** and **Pull (On-Demand Primary Research)**.
 
@@ -46,86 +138,14 @@ FINN operates across two primary modes: **Push (Proactive Intelligence)** and **
 
 ---
 
-## 2. How to Test on Laptop
+## 4. Technical Expectations & Design Decisions
 
-### Step 1: Install Dependencies
-Ensure you have **Python 3.10+** installed:
-```bash
-cd C:\Users\sachi\Downloads\ENAM_Assignment
-pip install -r requirements.txt
-```
-
-### Step 2: Run Automated Smoke Tests
-Validate that all 9 backend endpoints and data feeds are operational:
-```bash
-python test_agent.py
-```
-*(All 9 tests should return `[PASS]`)*.
-
-### Step 3: Launch the Prototype
-```bash
-python run.py
-```
-This boots the server on port `8000` and automatically opens `http://localhost:8000` in your default browser.
-
-### Step 4: Test in Mobile Simulator Mode (Recommended)
-FINN is built mobile-first (`max-width: 480px`). For the best evaluator experience on your desktop:
-1. Open `http://localhost:8000` in **Chrome** or **Edge**.
-2. Press **`F12`** (or right-click anywhere $\rightarrow$ **Inspect**).
-3. Press **`Ctrl + Shift + M`** (Toggle Device Toolbar).
-4. Select **iPhone 14 / iPhone 15 Pro** or **Pixel 7** from the top device dropdown to test touch scrolling, drawers, and tabs.
-
----
-
-## 3. How to Test on Phone
-
-You can run the live prototype directly on your smartphone in seconds using either Wi-Fi or a cloud tunnel.
-
-### Method A: Same Wi-Fi / Personal Hotspot (Zero Setup)
-`run.py` automatically binds to `0.0.0.0` and detects your machine's local network IP.
-
-1. **Connect your phone and laptop to the same Wi-Fi** (or connect your laptop to your phone's personal hotspot).
-2. On your laptop, run:
-   ```bash
-   python run.py
-   ```
-3. The terminal prints your mobile URL:
-   ```text
-   =================================================================
-     FINN: Financial Investment Agent (ENAM Holdings Challenge)
-     Mobile-First AI Intelligence Layer for Public Markets
-   =================================================================
-
-     [Local PC]    : http://localhost:8000
-     [On Your Phone]: http://<YOUR-IP>:8000 (e.g. http://172.23.47.68:8000)
-   =================================================================
-   ```
-4. Open **Safari** (iOS) or **Chrome** (Android) on your phone and type that address:
-   ```
-   http://<YOUR-IP>:8000
-   ```
-*(Note: If Windows Defender Firewall shows a popup, click **"Allow access"**).*
-
----
-
-### Method B: If on Campus / Hostel Wi-Fi (Client Isolation)
-University or hostel Wi-Fi networks (such as IIT Kanpur campus Wi-Fi) sometimes restrict device-to-device communication. If Method A does not connect:
-
-* **Option 1 (Phone Hotspot):** Turn on your phone's personal hotspot, connect your laptop to it, and re-run `python run.py`.
-* **Option 2 (Instant Free Tunnel via LocalTunnel):** In a second terminal on your PC, run:
-  ```bash
-  npx localtunnel --port 8000
-  ```
-  This generates a public HTTPS link (e.g., `https://finn-demo.loca.lt`) that you can open from **any smartphone on cellular data (4G/5G)** without network restrictions.
-
----
-
-## 4. Evaluator Quick-Start Credentials
-
-When the prototype opens, use the **One-Click Evaluator Sign In** button or manually enter the pre-registered credentials:
-* **Email:** `example@example.com`
-* **Password:** `password123`
-* *(Or switch to "Create Account" to test new analyst registrations with email verification).*
+| Criterion | Implementation |
+| :--- | :--- |
+| **Stock Data** | Live `yfinance` engine with 20-day rolling baseline calculations and in-memory fallback cache to ensure **zero evaluation downtime**. |
+| **Primary Filings** | Integrated canonical Screener.in document resolver (`#documents`, `#concalls`) with dynamic scrip routing (e.g. `500570` for Tata Motors, `ETERNAL` for Zomato). |
+| **Model Routing & Cost** | Deterministic regex heuristics for sub-second filing parsing; structured prompt routing for deep concall reasoning. |
+| **Zero "AI Slop"** | Metric grids, structured promise-vs-delivery scorecards, and badge chips instead of generic chatbot paragraphs. |
 
 ---
 
@@ -134,11 +154,12 @@ When the prototype opens, use the **One-Click Evaluator Sign In** button or manu
 ```
 ENAM_Assignment/
 │
-├── README.md               # Unified project documentation & testing guide
+├── README.md               # Evaluator documentation & testing guide
 ├── requirements.txt        # Minimal Python dependencies (fastapi, uvicorn, yfinance, httpx)
 ├── run.py                  # Dual-bind launcher (broadcasts to localhost & local phone IP)
 ├── app.py                  # FastAPI router orchestrating Push, Pull, Audio, & Copilot
 ├── test_agent.py           # 9-suite automated end-to-end integration test runner
+├── .gitignore              # Ignores __pycache__, pyc, and virtualenv files
 │
 ├── backend/
 │   ├── config.py           # 16-company portfolio watchlist & alert threshold presets
@@ -158,18 +179,7 @@ ENAM_Assignment/
 
 ---
 
-## 6. Technical Expectations & Design Decisions
-
-| Criterion | Implementation |
-| :--- | :--- |
-| **Stock Data** | Live `yfinance` engine with 20-day rolling baseline calculations and in-memory fallback cache to ensure **zero evaluation downtime**. |
-| **Primary Filings** | Integrated canonical Screener.in document resolver (`#documents`, `#concalls`) with dynamic scrip routing (e.g. `500570` for Tata Motors, `ETERNAL` for Zomato). |
-| **Model Routing & Cost** | Deterministic regex heuristics for sub-second filing parsing; structured prompt routing for deep concall reasoning. |
-| **Zero "AI Slop"** | Metric grids, structured promise-vs-delivery scorecards, and badge chips instead of generic chatbot paragraphs. |
-
----
-
-## 7. Submission Details
+## 6. Submission Details
 
 * **To:** `assessment@enam.com`
 * **Subject:** `ENAM - IIT screening - 2027`
