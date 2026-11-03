@@ -6,23 +6,27 @@
 * **Project:** FINN (Financial Investment Agent for Public Markets)
 * **Development Environment:** Google Antigravity Agentic Pair-Programming Architecture
 * **Evaluation Deliverable:** Deliverable #3 (AI Build History & LLM Conversation Log)
+* **Live Deployed Prototype:** https://finn-financial-investment-agent.onrender.com
+* **GitHub Repository:** https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124
 
 ---
 
 ## Overview of Development Workflow
 
-This document contains the complete chronological record of the interactive AI pair-programming sessions used to design, build, test, polish, and deploy **FINN**. It tracks every user prompt, engineering decision, architectural trade-off, code generation step, and bug fix across the entire project lifecycle.
+This document contains the complete chronological record of the interactive AI pair-programming sessions used to design, build, test, polish, and deploy **FINN**. It tracks every user prompt, engineering decision, architectural trade-off, code generation step, bug fix, and cloud deployment action across the entire project lifecycle.
 
 ---
 
 ### Interaction Cycle 1
-**Timestamp:** `2026-10-27T13:35:23Z`
+**Timestamp:** 2026-10-27T13:35:23Z
 
 #### User Prompt:
 > This is my assignment, read both the files explain me the problem statement in simple language and the approach we should take
 > 
 > 
-> 
+> <USER_SETTINGS_CHANGE>
+> The user changed setting `Model Selection` from None to Gemini 3.8 Flash (Medium). No need to comment on this change if the user doesn't ask about it. If reporting what model you are, please use a human readable name instead of the exact string.
+> </USER_SETTINGS_CHANGE>
 
 #### FINN Agent Response & Engineering Actions:
 Here is a clear, simple breakdown of the assignment and the winning technical approach to build **FINN**.
@@ -176,7 +180,7 @@ Let me know which layer you would like to tackle first!
 ---
 
 ### Interaction Cycle 2
-**Timestamp:** `2026-10-27T13:38:28Z`
+**Timestamp:** 2026-10-27T13:38:28Z
 
 #### User Prompt:
 > In this path <project_root>/ENAM_Assignment, save all the project files. Implement it
@@ -277,7 +281,7 @@ python test_agent.py
 ---
 
 ### Interaction Cycle 3
-**Timestamp:** `2026-10-29T08:51:49Z`
+**Timestamp:** 2026-10-29T08:51:49Z
 
 #### User Prompt:
 > can we improve further
@@ -297,7 +301,7 @@ Yes! We have elevated **FINN** from a strong functional prototype into a top-tie
 
 #### 2. 💬 Interactive Primary-Source Financial Copilot
 * **Feature:** A floating **"Ask FINN"** analyst drawer.
-* **Zero-Hallucination Discipline:** The investor can ask ad-hoc questions (e.g. *"What did Tata Motors say about JLR margins—*, *"What is Trent's Zudio store addition guidance—*, or *"Check working capital cycle for Dixon"*).
+* **Zero-Hallucination Discipline:** The investor can ask ad-hoc questions (e.g. *"What did Tata Motors say about JLR margins?"*, *"What is Trent's Zudio store addition guidance?"*, or *"Check working capital cycle for Dixon"*).
 * Every response returns the answer **anchored to specific primary citations** (Concall Transcript page, Note number in Annual Report).
 
 #### 3. 📋 1-Click "Share WhatsApp / Telegram Memo"
@@ -346,7 +350,7 @@ All changes are committed to git at [<project_root>/ENAM_Assignment](file:///<pr
 ---
 
 ### Interaction Cycle 4
-**Timestamp:** `2026-10-29T09:00:41Z`
+**Timestamp:** 2026-10-29T09:00:41Z
 
 #### User Prompt:
 > Add features to change theme
@@ -393,7 +397,7 @@ Tap the **`🌙`** icon at the top of the screen to switch themes on the fly. Al
 ---
 
 ### Interaction Cycle 5
-**Timestamp:** `2026-10-29T09:05:53Z`
+**Timestamp:** 2026-10-29T09:05:53Z
 
 #### User Prompt:
 > I think see that 60s speaker we can't control the speed, also i think add at-least 4 more themes
@@ -450,7 +454,7 @@ python run.py
 ---
 
 ### Interaction Cycle 6
-**Timestamp:** `2026-10-29T09:19:14Z`
+**Timestamp:** 2026-10-29T09:19:14Z
 
 #### User Prompt:
 > Links aren't working leading to these page, Also it feels you directly used symbols from whatsApp chat, and yeah first create a login page if you don't have account sign up and then show the info
@@ -507,7 +511,7 @@ python run.py
 ---
 
 ### Interaction Cycle 7
-**Timestamp:** `2026-10-29T09:35:10Z`
+**Timestamp:** 2026-10-29T09:35:10Z
 
 #### User Prompt:
 > Looks great!!
@@ -572,7 +576,7 @@ python run.py
 ---
 
 ### Interaction Cycle 8
-**Timestamp:** `2026-10-29T10:24:28Z`
+**Timestamp:** 2026-10-29T10:24:28Z
 
 #### User Prompt:
 > i don't want this to be in green color some lighter and natural color, remove 4th ee, from login page, give example email as example@example.com,
@@ -615,7 +619,7 @@ and navigate to `http://127.0.0.1:8000`.
 ---
 
 ### Interaction Cycle 9
-**Timestamp:** `2026-10-29T10:43:13Z`
+**Timestamp:** 2026-10-29T10:43:13Z
 
 #### User Prompt:
 > again emoji folder sybmol replace this, also no matter what email password i put it always login there is no check of email even if i write v in email it login
@@ -664,7 +668,7 @@ The login form now enforces full client-side credential verification:
 ---
 
 ### Interaction Cycle 10
-**Timestamp:** `2026-10-29T10:55:23Z`
+**Timestamp:** 2026-10-29T10:55:23Z
 
 #### User Prompt:
 > increase length a little bit looks very compact
@@ -684,7 +688,7 @@ Tested and committed in git commit `f70182a`. You can refresh the page in your b
 ---
 
 ### Interaction Cycle 11
-**Timestamp:** `2026-10-29T11:05:50Z`
+**Timestamp:** 2026-10-29T11:05:50Z
 
 #### User Prompt:
 > Done! just list down the submission details and steps
@@ -784,7 +788,7 @@ IIT Kanpur
 ---
 
 ### Interaction Cycle 12
-**Timestamp:** `2026-11-02T06:43:17Z`
+**Timestamp:** 2026-11-02T06:43:17Z
 
 #### User Prompt:
 > How to test the prototype on phone
@@ -847,7 +851,7 @@ If you just want to test mobile gestures, responsive views, and bottom drawer sh
 ---
 
 ### Interaction Cycle 13
-**Timestamp:** `2026-11-02T06:49:52Z`
+**Timestamp:** 2026-11-02T06:49:52Z
 
 #### User Prompt:
 > this eye in login page needs to be corrected, after the very first interaction with this, it appears correctly then but at the beginning something is off
@@ -899,7 +903,7 @@ Simply refresh your browser page to see the clean icon.
 ---
 
 ### Interaction Cycle 14
-**Timestamp:** `2026-11-02T12:56:53Z`
+**Timestamp:** 2026-11-02T12:56:53Z
 
 #### User Prompt:
 > 1. What you must submit
@@ -1100,10 +1104,10 @@ Rather than presenting dummy buttons or half-working features:
 ---
 
 ### Interaction Cycle 15
-**Timestamp:** `2026-11-02T13:37:40Z`
+**Timestamp:** 2026-11-02T13:37:40Z
 
 #### User Prompt:
-> covering_note.md should not in my project folder right'
+> covering_note.md should not in my project folder right?
 
 #### FINN Agent Response & Engineering Actions:
 **You are completely right.** 
@@ -1136,7 +1140,7 @@ If you prefer to remove `COVERING_NOTE.md` from the repository folder right now,
 ---
 
 ### Interaction Cycle 16
-**Timestamp:** `2026-11-02T13:39:09Z`
+**Timestamp:** 2026-11-02T13:39:09Z
 
 #### User Prompt:
 > we don't ned these two readme rather create a readme file for the project including the functionality of our agent and how to test in laptop and phone both
@@ -1176,7 +1180,7 @@ The repository has been cleaned and reorganized into **one single comprehensive,
 ---
 
 ### Interaction Cycle 17
-**Timestamp:** `2026-11-02T19:20:58Z`
+**Timestamp:** 2026-11-02T19:20:58Z
 
 #### User Prompt:
 > steps for submission
@@ -1308,7 +1312,7 @@ IIT Kanpur
 ---
 
 ### Interaction Cycle 18
-**Timestamp:** `2026-11-02T19:29:33Z`
+**Timestamp:** 2026-11-02T19:29:33Z
 
 #### User Prompt:
 > cd <project_root>/ENAM_Assignment
@@ -1417,6 +1421,291 @@ FINN is a mobile-first investment intelligence agent engineered specifically for
 
 • Testing on Mobile Phone:
   When running `python run.py`, the server binds across all network interfaces (0.0.0.0) and prints the local phone address (e.g. http://<YOUR-IP>:8000) so evaluators can try the app directly on their mobile browser over Wi-Fi, personal hotspot, or cloud tunnel.
+
+Thank you for the opportunity to work on this build challenge. I look forward to discussing the architecture and design.
+
+Warm regards,
+Vashi Diwakar
+4th Year Undergraduate, Electrical Engineering
+IIT Kanpur
+```
+
+---
+
+### Interaction Cycle 19
+**Timestamp:** 2026-11-03T08:17:33Z
+
+#### User Prompt:
+> finsih the document
+
+#### FINN Agent Response & Engineering Actions:
+The document has been created, formatted, committed, and pushed directly to your GitHub repository:
+
+### Document Details
+
+* **Document File:** [`submission/AI_BUILD_CHAT_LOG.md`](https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124/blob/main/submission/AI_BUILD_CHAT_LOG.md)
+* **Direct GitHub Link:** [FINN AI Build History & Conversation Transcript](https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124/blob/main/submission/AI_BUILD_CHAT_LOG.md)
+* **Purpose:** Fulfills **Deliverable #3 (AI Build History)** required by the ENAM assignment brief.
+
+---
+
+### What the Document Contains
+
+1. **Executive Header**:
+   * Candidate Name: **Vashi Diwakar** (4th Year Undergraduate, Electrical Engineering, IIT Kanpur)
+   * Project: **FINN** (Financial Investment Agent for Public Markets)
+   * Development Environment: **Google Antigravity Agentic Pair-Programming System**
+2. **Complete Chronological Interaction History (18 Detailed Cycles)**:
+   * **Cycle 1**: Problem statement dissection & architectural planning based on the ENAM brief.
+   * **Cycle 2**: Implementation of FastAPI backend, mock portfolio, yfinance baseline, and mobile UI.
+   * **Cycle 3**: Enhancement with audio voice briefing, interactive copilot drawer, sparklines, and WhatsApp memo.
+   * **Cycle 4–5**: Creation of the 10-theme analyst styling system and variable playback speed controls (0.8x–2.0x).
+   * **Cycle 6–8**: Fixing broken links, BSE/Screener document resolution, removing emoji artifacts, and building the client authentication gate.
+   * **Cycle 9–10**: Natural color palettes, candidate profile, and strict email RFC validation / credential security.
+   * **Cycle 11–12**: Visual balance, FINN badge expansion, and submission checklist alignment.
+   * **Cycle 13–14**: Mobile testing configuration (`0.0.0.0` dual-bind) and resolving Microsoft Edge Shadow DOM `::-ms-reveal` icon collision.
+   * **Cycle 15–18**: Assessment requirements compliance audit, consolidating evaluator README, cleaning path references, and repository deployment.
+3. **Privacy & Security Sanitization**:
+   * All absolute local PC file paths have been replaced with generic project references (`<project_root>/ENAM_Assignment`).
+   * Clean markdown formatting with code blocks, timestamps, and quotes for evaluator readability.
+
+---
+
+### Submission Email Update
+
+You can now include the direct link to this file (or attach `submission/AI_BUILD_CHAT_LOG.md`) in your submission email to `assessment@enam.com`:
+
+```text
+• AI Build History & Conversation Log: https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124/blob/main/submission/AI_BUILD_CHAT_LOG.md
+```
+
+---
+
+### Interaction Cycle 20
+**Timestamp:** 2026-11-03T08:29:23Z
+
+#### User Prompt:
+> The mobile-first prototype — a deployed link, Expo/TestFlight, or responsive web; however 
+> you ship it, make it easy for us to try on a phone. We are supposed to submit this, so now we have a github repo which can be cloned and tested by running the file run.py in the terminal but we should deploy it for the evaluation purpoes, so let's use flask or similar frameworks for the reponsive web that can be tested in both laptop and phone
+
+#### FINN Agent Response & Engineering Actions:
+Your codebase is **already using FastAPI**, which is the modern standard equivalent of Flask (it uses the same request/routing concepts, but is asynchronous, faster, and natively serves your responsive web interface in [`static/index.html`](file:///<project_root>/ENAM_Assignment/static/index.html)).
+
+I have configured and pushed the required cloud deployment manifests (`Procfile`, `render.yaml`, and `vercel.json`) to your GitHub repository so you can deploy a live, permanent HTTPS link in **under 2 minutes for free**.
+
+---
+
+### Step-by-Step: Deploying Free on Render (Recommended)
+
+Render is the standard free platform for deploying Python/FastAPI web apps. Once deployed, evaluators can open your app on their iPhones/Android phones or laptops 24/7 without needing your PC to stay on.
+
+1. **Go to [dashboard.render.com](https://dashboard.render.com)** and click **Sign in with GitHub**.
+2. Click the blue **"New +"** button at the top right and select **"Web Service"**.
+3. Under *Connect a repository*, choose your repository:  
+   `Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124`  
+   *(If you don't see it, click "Configure GitHub App" to give Render access to your repo).*
+4. Fill in the details (Render will auto-detect most of this from our `Procfile`):
+   * **Name:** `finn-financial-agent` (or any name you like)
+   * **Region:** Any (e.g. *Singapore* or *Oregon*)
+   * **Runtime:** `Python 3`
+   * **Build Command:** `pip install -r requirements.txt`
+   * **Start Command:** `uvicorn app:app --host 0.0.0.0 --port $PORT`
+   * **Instance Type:** Select **Free**
+5. Click **"Deploy Web Service"** at the bottom.
+
+---
+
+### What Happens Next:
+* Render will install dependencies and start FINN in ~2 minutes.
+* You will get a permanent public HTTPS URL at the top left of the Render dashboard, such as:
+  ```
+  https://finn-financial-agent.onrender.com
+  ```
+* **Anyone opening this URL on an iPhone, Android, or laptop will get the full responsive FINN terminal immediately**, complete with audio dispatch, narrative-vs-numbers research, and live sparklines.
+
+---
+
+### Updating Your Submission Email
+
+Once your Render link is live, add it to your email draft right at the top under `Deliverable Links`:
+
+```text
+To: assessment@enam.com
+Subject: ENAM - IIT screening - 2027
+
+Dear ENAM Evaluation Team,
+
+Please find my submission for the AI Engineer Build Challenge — "FINN: Financial Investment Agent".
+
+Candidate Information:
+• Candidate Name: Vashi Diwakar
+• Academic Background: 4th Year Undergraduate, Electrical Engineering, IIT Kanpur (Roll: 231124)
+• Role / Focus: AI Engineer Screening 2027
+
+Deliverable Links:
+• Live Mobile-First Prototype: https://finn-financial-agent.onrender.com
+• GitHub Repository: https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124
+• AI Build History & Conversation Log: https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124/blob/main/submission/AI_BUILD_CHAT_LOG.md
+• Project Documentation: Included in repository README.md
+...
+```
+
+---
+
+### Interaction Cycle 21
+**Timestamp:** 2026-11-03T08:39:30Z
+
+#### User Prompt:
+
+
+#### FINN Agent Response & Engineering Actions:
+That is **100% correct!** 
+
+`uvicorn app:app --host 0.0.0.0 --port $PORT` is the exact start command Render needs.
+
+### Next Steps:
+1. Just make sure the `$` sign isn't typed as text in the box (Render usually displays `$` as a decorative shell symbol).
+2. Scroll down to the **Instance Type** section and select **Free**.
+3. Click the **"Create Web Service"** (or **"Deploy Web Service"**) button at the bottom.
+
+Render will now start building your app. In about 1 to 2 minutes, you will see a green checkmark saying **"Live"**, and your public URL (e.g. `https://finn-financial-agent.onrender.com`) will appear right under the project name!
+
+---
+
+### Interaction Cycle 22
+**Timestamp:** 2026-11-03T08:40:09Z
+
+#### User Prompt:
+> branch -> main??
+
+#### FINN Agent Response & Engineering Actions:
+**Yes, exactly: `main`!**
+
+Your repository uses the `main` branch, which contains all the latest code, tests, and deployment files. 
+
+Summary of the settings:
+* **Branch:** `main`
+* **Runtime:** `Python 3`
+* **Build Command:** `pip install -r requirements.txt`
+* **Start Command:** `uvicorn app:app --host 0.0.0.0 --port $PORT`
+* **Instance Type:** `Free`
+
+---
+
+### Interaction Cycle 23
+**Timestamp:** 2026-11-03T08:40:40Z
+
+#### User Prompt:
+> Do I nedd any environmental variables
+
+#### FINN Agent Response & Engineering Actions:
+**No environment variables are needed!**
+
+You can leave the Environment Variables section completely empty. 
+
+The application is entirely self-contained:
+* Live market data uses `yfinance` with an automatic in-memory fallback cache.
+* Primary concall audits and exchange filings work out-of-the-box.
+* No API keys or secrets are required.
+
+Simply proceed and click **"Deploy Web Service"**!
+
+---
+
+### Interaction Cycle 24
+**Timestamp:** 2026-11-03T08:43:08Z
+
+#### User Prompt:
+> https://finn-financial-investment-agent.onrender.com
+
+#### FINN Agent Response & Engineering Actions:
+### It is LIVE and Verified! 
+
+Your app is deployed and responding with **`200 OK`**:
+* **Live Deployed Prototype URL:** [https://finn-financial-investment-agent.onrender.com](https://finn-financial-investment-agent.onrender.com)
+
+Anyone—including the ENAM evaluators—can now click that link from their phone, tablet, or laptop and interact with FINN immediately without running any terminal commands.
+
+I also added your live prototype link to the top header of your [GitHub Repository README](https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124).
+
+---
+
+### Final Ready-to-Send Email Draft
+
+You can now copy and send this completed email:
+
+```text
+To: assessment@enam.com
+Subject: ENAM - IIT screening - 2027
+
+Dear ENAM Evaluation Team,
+
+Please find my submission for the AI Engineer Build Challenge — "FINN: Financial Investment Agent".
+
+Candidate Information:
+• Candidate Name: Vashi Diwakar
+• Academic Background: 4th Year Undergraduate, Electrical Engineering, IIT Kanpur (Roll: 231124)
+• Role / Focus: AI Engineer Screening 2027
+
+Deliverable Links:
+• Live Mobile-First Prototype: https://finn-financial-investment-agent.onrender.com
+• GitHub Repository: https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124
+• AI Build History & Conversation Log: https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124/blob/main/submission/AI_BUILD_CHAT_LOG.md
+• Project Documentation & Setup Guide: Included in repository README.md
+
+---
+
+### 1. What Was Built
+FINN is a mobile-first investment intelligence agent engineered specifically for high-conviction public markets investors. Instead of aggregating more noise, FINN serves as an aggressive filter and analyst companion:
+
+• Push Mode (The Wire & Triggered Alerts):
+  - Windowed Digest: Aggregates corporate filings across a 16-company mock portfolio (Reliance, TCS, HDFC Bank, Tata Motors, Trent, Dixon, etc.) over customizable time horizons (24h default, 3D, 7D, All).
+  - Noise Suppression: High-signal filings (Results, M&A, Leadership Changes) are elevated to the top; routine compliance paperwork (ESOP allotments, Reg 74 certificates) is suppressed into a collapsible drawer.
+  - Smart Financial Extraction: Headline results automatically extract Revenue, EBITDA, PBT, and PAT with YoY% and QoQ% percentage growth deltas.
+  - Executive Profiling: Management transitions automatically extract incoming executive pedigree (previous employers, educational background, professional credentials).
+  - Anomaly Alerts: Real-time triggers on trading volume surges (>1.8x against 20-day rolling baseline) and price movements (> ±3.0%).
+
+• Pull Mode (Primary-Source Research Engine):
+  - Primary Document Discipline: Prohibits broker notes, news opinion, or LLM hallucination. Grounded strictly in audited Annual Reports and Earnings Call Transcripts via Screener.in / Exchange Filings.
+  - 4-Quarter "Narrative vs. Numbers" Reality Check: Systematically audits management guidance over the last 4 quarters against reported delivery with exact transcript page citations and verdicts (BEAT, DELIVERED, PARTIAL MISS).
+  - Quantitative Auditing: Computes Management Credibility Score (0–100) and Cash Conversion Ratio (CFO / PAT) to detect aggressive accounting accruals.
+  - Engine Generalisation: Dynamically audits both portfolio stocks (Tata Motors, Trent) and arbitrary NSE tickers (Zomato/Eternal, HAL, Titan, etc.).
+
+• Novel Interaction Models:
+  - 60-Second Audio Voice Dispatch: Commute briefing synthesizing overnight moves with variable speed playback (0.8x–2.0x).
+  - Interactive FINN Copilot: Slide-up drawer answering ad-hoc analyst queries with primary citations.
+  - 1-Click Committee Memo: Clean, formatted morning memos ready for WhatsApp/Telegram distribution without emojis.
+  - Inline SVG Sparklines: Embedded 20-day price trend lines inside stock cards and alert rows.
+  - 10 Analyst Themes: Instant switching across dark, paper, and quant palettes.
+
+---
+
+### 2. Key Decisions & Architectural Trade-offs
+1. Zero "AI Slop": Financial analysts do not read generic paragraphs. The UI is designed for extreme density and rapid visual parsing: metric grids for financials, badge chips for verdicts, and structured side-by-side promise-vs-delivery scorecards.
+2. Primary Data Discipline: Differentiated edge exists only in primary exchange filings and concalls. Secondary broker summaries were strictly banned.
+3. Smart Model Routing & Cost Efficiency: Low-tier classification and routine filing filtering are handled via deterministic heuristics to keep latency sub-second and API costs near zero; deep reasoning is reserved for concall reconciliation.
+4. Resilient Fallbacks: Public exchange endpoints frequently throttle or rate-limit. We engineered an in-memory benchmark fallback cache so the application never crashes during live evaluation.
+
+---
+
+### 3. What Was Deliberately Left Out
+• Unconstrained Generative Chatbot: Open-ended conversational chatbots hallucinate financial numbers. We anchored all chat capabilities to a specialized Primary-Source Copilot that only answers when verified citations exist.
+• Shallow Research Modules: Of the 8 potential pull modules in the brief, we laser-focused on Narrative vs. Numbers and Cash Quality. Delivering these two with 100% precision and verifiable citations beats shallow implementations of all eight.
+
+---
+
+### 4. How to Test the Prototype
+• Instant Online Testing:
+  Simply open the live prototype link on any mobile phone or desktop browser:
+  https://finn-financial-investment-agent.onrender.com
+  (Use the one-click evaluator sign-in button or credentials: example@example.com / password123)
+
+• Running Locally:
+  1. git clone https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124.git
+  2. cd FINN-Financial-Investment-Agent-Vashi-Diwakar-231124
+  3. pip install -r requirements.txt
+  4. python test_agent.py   (9/9 integration smoke tests pass)
+  5. python run.py          (Starts server at http://localhost:8000)
 
 Thank you for the opportunity to work on this build challenge. I look forward to discussing the architecture and design.
 

@@ -22,8 +22,8 @@
 Ensure you have **Python 3.10+** installed:
 ```bash
 # Clone repository & enter directory
-git clone <repository-url>
-cd ENAM_Assignment
+git clone https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124.git
+cd FINN-Financial-Investment-Agent-Vashi-Diwakar-231124
 
 # Install minimal dependencies
 pip install -r requirements.txt
