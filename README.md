@@ -2,6 +2,8 @@
 ### ENAM Holdings AI Engineer Build Challenge (2027 Screening)
 
 > **Submission Status:** `READY FOR EVALUATION`  
+> **Live Deployed Prototype:** [https://finn-financial-investment-agent.onrender.com](https://finn-financial-investment-agent.onrender.com)  
+> **GitHub Repository:** [https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124](https://github.com/Vashidiwakar/FINN-Financial-Investment-Agent-Vashi-Diwakar-231124)  
 > **Test Suite:** 9/9 Integration Smoke Tests Passing (`test_agent.py`)  
 > **Candidate:** Vashi Diwakar (4th Year Undergraduate, Electrical Engineering, IIT Kanpur)  
 > **Target Reviewers:** ENAM Evaluation Team (`assessment@enam.com`)
