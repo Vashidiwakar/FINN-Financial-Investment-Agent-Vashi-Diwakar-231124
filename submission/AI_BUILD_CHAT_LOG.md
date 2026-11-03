@@ -1143,7 +1143,7 @@ If you prefer to remove `COVERING_NOTE.md` from the repository folder right now,
 **Timestamp:** 2026-11-02T13:39:09Z
 
 #### User Prompt:
-> we don't ned these two readme rather create a readme file for the project including the functionality of our agent and how to test in laptop and phone both
+> we don't need these two readme rather create a readme file for the project including the functionality of our agent and how to test in laptop and phone both
 
 #### FINN Agent Response & Engineering Actions:
 The repository has been cleaned and reorganized into **one single comprehensive, professional [`README.md`](file:///<project_root>/ENAM_Assignment/README.md)**:
@@ -1183,7 +1183,7 @@ The repository has been cleaned and reorganized into **one single comprehensive,
 **Timestamp:** 2026-11-02T19:20:58Z
 
 #### User Prompt:
-> steps for submission
+> List down the steps for submission
 
 #### FINN Agent Response & Engineering Actions:
 Here are the exact, step-by-step instructions to submit your assignment to ENAM Holdings.
@@ -1436,7 +1436,7 @@ IIT Kanpur
 **Timestamp:** 2026-11-03T08:17:33Z
 
 #### User Prompt:
-> finsih the document
+> finish the document
 
 #### FINN Agent Response & Engineering Actions:
 The document has been created, formatted, committed, and pushed directly to your GitHub repository:
@@ -1596,7 +1596,7 @@ Summary of the settings:
 **Timestamp:** 2026-11-03T08:40:40Z
 
 #### User Prompt:
-> Do I nedd any environmental variables
+> Do I need any environmental variables
 
 #### FINN Agent Response & Engineering Actions:
 **No environment variables are needed!**
