@@ -161,6 +161,9 @@ ENAM_Assignment/
 ├── run.py                  # Dual-bind launcher (broadcasts to localhost & local phone IP)
 ├── app.py                  # FastAPI router orchestrating Push, Pull, Audio, & Copilot
 ├── test_agent.py           # 9-suite automated end-to-end integration test runner
+├── Procfile                # Production process declaration for Render cloud deployment
+├── render.yaml             # Render Infrastructure-as-Code service blueprint
+├── vercel.json             # Vercel serverless edge deployment manifest
 ├── .gitignore              # Ignores __pycache__, pyc, and virtualenv files
 │
 ├── backend/
@@ -176,7 +179,8 @@ ENAM_Assignment/
 │   └── js/app.js           # Client-side state, drawer logic, audio synthesis, & auth gate
 │
 └── submission/
-    └── AI_BUILD_HISTORY.md # AI interaction log and architecture decision record
+    ├── AI_BUILD_HISTORY.md # Architectural decisions, trade-offs, & engineering log
+    └── AI_BUILD_CHAT_LOG.md # Full chronological 24-cycle AI conversation transcript
 ```
 
 ---
